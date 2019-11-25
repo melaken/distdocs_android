@@ -1,4 +1,4 @@
-package dataaccess;
+package com.example.distdocs.dao;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

@@ -1,16 +1,19 @@
-package com.example.distdocs;
+package com.example.distdocs.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
+import com.example.distdocs.R;
+import com.example.distdocs.dao.FetchDocsRequest;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,16 +43,22 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        try{
+            switch (item.getItemId())
+            {
+                case R.id.menu_check:
+                    Intent intent = new Intent();
+                    intent.setClass(this, FetchDocsRequest.class);
+                    startActivity(intent);
+                    return true;
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+
+                default:
+                    return super.onOptionsItemSelected(item);
+            }
+        }catch (Exception e){
+            Toast.makeText(this,e.getMessage(),Toast.LENGTH_SHORT).show();
+            return false;
         }
-
-        return super.onOptionsItemSelected(item);
     }
 }

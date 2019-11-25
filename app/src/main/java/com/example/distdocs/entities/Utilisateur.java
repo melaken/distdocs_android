@@ -1,6 +1,4 @@
-package entities;
-
-import java.sql.Timestamp;
+package com.example.distdocs.entities;
 
 public class Utilisateur {
     private long id;

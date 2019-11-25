@@ -1,6 +1,5 @@
-package entities;
+package com.example.distdocs.entities;
 
-import java.io.InputStream;
 import java.sql.Timestamp;
 
 public class DocsAchetes {

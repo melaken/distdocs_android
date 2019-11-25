@@ -1,15 +1,14 @@
-package dataaccess;
+package com.example.distdocs.dao;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import java.util.List;
+import com.example.distdocs.entities.Constante;
+import com.example.distdocs.entities.DocsAchetes;
 
-import entities.Constante;
-import entities.DocsAchetes;
-import entities.Document;
+import java.util.List;
 
 public class DocumentDao {
     DataBaseHandler dbh;
@@ -45,14 +44,18 @@ public class DocumentDao {
         return db.insert(Constante.table_docs,null,vals);
     }
     public String lastInsertDatetime(){
-        String lastDate = "";
+        String lastDate = null;
         db = dbh.getReadableDatabase();
-        Cursor c = db.query(Constante.table_docs, new String[]{"MAX(date_achat)"}, null, null, null, null, null);
-        if(c.getCount()>0){
-            c.moveToFirst();
-            lastDate =c.getString(0);
+        try {
+            Cursor c = db.rawQuery("select max(last_update) from "+Constante.table_docs, null);
+            if (c.getCount() > 0) {
+                c.moveToFirst();
+                lastDate = c.getString(0);
+            }
+            c.close();
+        }catch (Throwable e){
+            e.printStackTrace();
         }
-        c.close();
         db.close();
          return lastDate;
     }

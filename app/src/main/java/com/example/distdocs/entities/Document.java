@@ -1,4 +1,4 @@
-package entities;
+package com.example.distdocs.entities;
 
 import java.sql.Timestamp;
 import java.util.Date;

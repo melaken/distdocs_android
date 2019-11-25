@@ -1,21 +1,15 @@
-package beans;
+package com.example.distdocs.beans;
 
 import android.app.Activity;
 import android.os.AsyncTask;
-import android.util.Log;
 
-import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-
-import dataaccess.DocumentDao;
 
 public class DocumentActivity extends Activity {
 
