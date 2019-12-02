@@ -1,5 +1,6 @@
 package com.example.distdocs.entities;
 
+import java.io.InputStream;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -15,6 +16,15 @@ public class Document {
 	private Long editeur;
 	private String resume;
 	private String premiereCouverture;
+	private InputStream image;
+
+
+	public void setImage(InputStream image){
+		this.image = image;
+	}
+	public InputStream getImage(){
+		return this.image;
+	}
 	public long getId() {
 		return id;
 	}

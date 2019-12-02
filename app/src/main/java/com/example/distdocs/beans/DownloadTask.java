@@ -5,6 +5,24 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.example.distdocs.entities.ApplicationController;
+import com.example.distdocs.entities.Constante;
+import com.example.distdocs.entities.DocsAchetes;
+import com.example.distdocs.entities.Document;
+import com.example.distdocs.entities.ResponseCallback;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,102 +32,88 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLConnection;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class DownloadTask {
     private static final String TAG = "Download Task";
     private Context context;
-    private String downloadUrl = "";
     private ProgressDialog progressDialog;
-    private ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    List<Document> liste ;
+//    ResponseCallback responseCallback;
 
-    public DownloadTask(Context context, String downloadUrl) {
-        this.context = context;
-        this.downloadUrl = downloadUrl;
-
-        //Start Downloading Task
-        new DownloadingTask().execute();
+    public List<Document> getListe(){
+        return liste;
     }
+    public DownloadTask(Context context ){
+        super();
+//        this.context = cont;
+        liste = new ArrayList<>();
+        progressDialog = new ProgressDialog(context);
+        progressDialog.setMessage("Downloading... Please Wait");
+        progressDialog.show();
+    }
+     public void getDocs(final ResponseCallback responseCallback){
+            System.out.println("In doInBackground downloadTask");
+            StringRequest stringRequest = new StringRequest(Request.Method.POST,
+                    Constante.PROTOCOLE+Constante.SERVER+Constante.PORT+Constante.app_name+ Constante.getDocs,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            progressDialog.dismiss();
+                            try {
+                                JSONObject obj = new JSONObject(response);
+                                JSONArray jsonArray = obj.getJSONArray("docs");
+                                System.out.println("jsonArray size "+jsonArray.length());
 
-    private class DownloadingTask extends AsyncTask<Void, Void, Void> {
+                                for(int i=0;i<jsonArray.length();i++){
 
+                                    //Declaring a json object corresponding to every Document object in our json Array
+                                    JSONArray array = jsonArray.getJSONArray(i);
+                                    //Declaring a Document object to add it to the ArrayList  listeDocs
+                                    Document doc = new Document();
+                                    doc.setId(Integer.parseInt(array.get(0).toString()));
+                                    doc.setPrix(Float.parseFloat(array.get(1).toString()));
+                                   // doc.setImage((array.get(2).toString().getBytes()));
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressDialog = new ProgressDialog(context);
-            progressDialog.setMessage("Downloading...");
-            progressDialog.show();
-        }
+                                    liste.add(doc);
+                                }
 
-        @Override
-        protected void onPostExecute(Void result) {
+                                System.out.println("size da "+liste.size());
+                                if (responseCallback != null) {
+                                    responseCallback.onLoginSuccess(response);
+                                    progressDialog.dismiss();
+                                }
 
-            super.onPostExecute(result);
-        }
+                            } catch (JSONException e) {
+                                System.out.println("JSONException");
+                                e.printStackTrace();
+                            }
 
-        @Override
-        protected Void doInBackground(Void... arg0) {
-            try {
-                URL url = new URL(downloadUrl);//Create Download URl
-                HttpURLConnection c = (HttpURLConnection) url.openConnection();//Open Url Connection
-                c.setRequestMethod("GET");//Set Request Method to "GET" since we are getting data
-                c.connect();//connect the URL Connection
-
-                //If Connection response is not OK then show Logs
-                if (c.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                    Log.e(TAG, "Server returned HTTP " + c.getResponseCode()+ " " + c.getResponseMessage());
-                }
-
-
-                InputStream is = c.getInputStream();//Get InputStream for connection
-
-                byte[] buffer = new byte[1024];//Set buffer type
-                int len1 = 0;//init length
-
-                while ((len1 = is.read(buffer)) != -1) {
-                    bos.write(buffer, 0, len1);//Write new file
-
-                }
-                // return bos != null ? bos.toByteArray() : null;
-//                InputStream is;
-//                byte[] bytes = IOUtils.toByteArray(is);
-
-                //Close all connection after doing task
-                bos.close();
-                is.close();
-
-            } catch (Exception e) {
-
-                //Read exception if something went wrong
-                e.printStackTrace();
-                Log.e(TAG, "Download Error Exception " + e.getMessage());
-
-            }
-            new Thread(new Runnable(){
+                        }
+                    }
+                    ,
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            System.out.println("ErrorListener");
+                            error.printStackTrace();
+                        }
+                    }
+            ){
 
                 @Override
-                public void run() {
-
-                    try{
-                        Thread.sleep(5000);
-
-                    }catch(Exception e){
-
-                    }
-
+                public Request.Priority getPriority() {
+                    return Priority.HIGH;
                 }
-            }).run();
-            progressDialog.dismiss();
+            };
 
-            return null;
+            ApplicationController.getInstance().addToRequestQueue(stringRequest);
+            ApplicationController.getInstance().getRequestQueue().start();
+
         }
-    }
-
-    public ByteArrayOutputStream getBos() {
-        return bos;
-    }
-
-    public void setBos(ByteArrayOutputStream bos) {
-        this.bos = bos;
-    }
 }

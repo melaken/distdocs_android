@@ -7,8 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DataBaseHandler extends SQLiteOpenHelper {
     String query_user = "create table Utilisateur(id INTEGER PRIMARY KEY,email TEXT UNIQUE,mot_de_passe TEXT NOT NULL, nom TEXT NOT NULL, prenom TEXT)";
     String query = "create table DocsAchetes(doc_id INTEGER PRIMARY KEY,premiere_couverture TEXT not null ," +
-            "cover BLOB NOT NULL," +
-            "document BLOB NOT NULL, last_update datetime NOT NULL) ";
+            "last_update datetime NOT NULL) ";
 
 
     public DataBaseHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {

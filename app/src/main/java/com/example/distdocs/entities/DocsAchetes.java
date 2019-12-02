@@ -1,14 +1,24 @@
 package com.example.distdocs.entities;
 
+import java.io.InputStream;
 import java.sql.Timestamp;
 
 public class DocsAchetes {
 
-	private long docId;
-	private byte[] cover;
-	private byte[] document;
+	private int docId;
+	private InputStream cover;
+	private InputStream document;
 	private String premiere_couverture;
 	private Timestamp lastUpdate;
+
+
+//	public DocsAchetes(long docId, String premiere_couverture, Timestamp lastUpdate) {
+//		this.docId = docId;
+//		this.cover = cover;
+//		this.document = document;
+//		this.premiere_couverture = premiere_couverture;
+//		this.lastUpdate = lastUpdate;
+//	}
 
 	public String toString() {
 		return " docId = "+docId;
@@ -22,10 +32,10 @@ public class DocsAchetes {
 		this.premiere_couverture = premiere_couverture;
 	}
 
-	public long getDocId() {
+	public int getDocId() {
 		return docId;
 	}
-	public void setDocId(long docId) {
+	public void setDocId(int docId) {
 		this.docId = docId;
 	}
 	public Timestamp getLastUpdate() {
@@ -36,19 +46,19 @@ public class DocsAchetes {
 		this.lastUpdate = lastUpdate;
 	}
 
-	public byte[] getCover() {
+	public InputStream getCover() {
 		return cover;
 	}
 
-	public void setCover(byte[] cover) {
+	public void setCover(InputStream cover) {
 		this.cover = cover;
 	}
 
-	public byte[] getDocument() {
+	public InputStream getDocument() {
 		return document;
 	}
 
-	public void setDocument(byte[] document) {
+	public void setDocument(InputStream document) {
 		this.document = document;
 	}
 }

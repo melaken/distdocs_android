@@ -1,29 +1,94 @@
 package com.example.distdocs.beans;
 
-import android.app.Activity;
-import android.os.AsyncTask;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Environment;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.distdocs.R;
+import com.example.distdocs.dao.DocumentDao;
+import com.example.distdocs.entities.DocsAchetes;
+import com.github.barteksc.pdfviewer.PDFView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.io.InputStream;
+import java.sql.Timestamp;
 
-public class DocumentActivity extends Activity {
+public class DocumentActivity extends AppCompatActivity {
 
-    private static final String TAG = "Download Task";
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.display_doc_layout);
+
+        String doc_name = "CondoLiving.pdf";
+        String doc_cover = "CondoLiving_cover.jpg";
+        File doc = new File(
+                Environment.getExternalStorageDirectory() + "/"
+                        + "distdocs",doc_name);
+        File cover = new File(
+                Environment.getExternalStorageDirectory() + "/"
+                        + "distdocs",doc_cover);
+
+        DocumentDao docDao = new DocumentDao(this);
+        DocsAchetes lastDoc = docDao.lastInsertDoc();
+        System.out.println("lastDOc id="+lastDoc.getDocId()+" cover="+lastDoc.getPremiere_couverture()+" date="+lastDoc.getLastUpdate());
+
+        DocsAchetes da = new DocsAchetes();
+        da.setDocId(2);
+//        da.setCover(readFile(cover));
+//        da.setDocument(readFile(doc));
+        da.setPremiere_couverture(cover.getName());
+        da.setLastUpdate(Timestamp.valueOf("2019-11-20 11:32:11"));
+        docDao.addDocument(da);
+
+        da = docDao.lastInsertDoc();
+
+        Intent intent=getIntent();
+        PDFView pdfView = (PDFView) findViewById(R.id.pdfView);
+
+//        pdfView.fromBytes(da.getDocument()).enableSwipe(true) // allows to block changing pages using swipe
+//                .swipeHorizontal(false)
+//                .enableDoubletap(true)
+//                .defaultPage(0).password(null)
+//                .load();
+
+
+//        String path=Constante.PROTOCOLE+ Constante.SERVER+Constante.BOOKS+"/"+8;
+//
+
+    }
+
+    InputStream getByteValues(File file){
+        InputStream stream = null;
+        try {
+            stream = new FileInputStream(file);
+            System.out.println("after read stream");
+
+
+        } catch (FileNotFoundException e) {
+            System.out.println("Error in DocumentActivity");
+            e.printStackTrace();
+        }
+
+        return stream;
+    }
+
     /**
      * Read the file and returns the byte array
      * @param file
      * @return the bytes of the file
      */
 
-    private byte[] readFile(URL url, String file) {
+    private byte[] readFile(File f) {
         ByteArrayOutputStream bos = null;
         try {
-            File f = new File(url.toURI());
+           // File f = new File(url.toURI());
             FileInputStream fis = new FileInputStream(f);
             byte[] buffer = new byte[1024];
             bos = new ByteArrayOutputStream();
@@ -34,54 +99,9 @@ public class DocumentActivity extends Activity {
             System.err.println(e.getMessage());
         } catch (IOException e2) {
             System.err.println(e2.getMessage());
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
         }
         return bos != null ? bos.toByteArray() : null;
     }
-    private class DownloadingTask extends AsyncTask<Void, Void, Void> {
 
-        File apkStorage = null;
-        File outputFile = null;
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-//            progressDialog = new ProgressDialog(context);
-//            progressDialog.setMessage("Downloading...");
-//            progressDialog.show();
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-//            try {
-//                if (outputFile != null) {
-//                    //progressDialog.dismiss();
-//                    // Toast.makeText(context, "Download Successfully", Toast.LENGTH_SHORT).show();
-//                } else {
-//                    Log.e(TAG, "Download Failed");
-//                }
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//
-//                //Change button text if exception occurs
-//
-//               /* new Handler().postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//
-//                    }
-//                }, 3000);*/
-//                Log.e(TAG, "Download Failed with Exception - " + e.getLocalizedMessage());
-//
-//            }
-
-            super.onPostExecute(result);
-        }
-
-        @Override
-        protected Void doInBackground(Void... arg0) {
-            return null;
-        }
-    }
 }
