@@ -1,6 +1,7 @@
 package com.example.distdocs.activities;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -23,12 +24,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.distdocs.R;
-import com.example.distdocs.beans.DocumentActivity;
-import com.example.distdocs.dao.FetchDocsRequest;
+import com.example.distdocs.dao.DocumentDao;
 import com.example.distdocs.entities.Constante;
 import com.example.distdocs.entities.Document;
-import com.example.distdocs.entities.DocumentAdapter;
-import com.example.distdocs.entities.ResponseCallback;
+import com.example.distdocs.accessories.DocumentAdapter;
+import com.example.distdocs.accessories.ResponseCallback;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONArray;
@@ -45,6 +45,9 @@ public class MainActivity extends AppCompatActivity {
     //an array to hold the different pdf objects
     ArrayList<Document> docList= new ArrayList<>();
     private ProgressDialog progressDialog;
+    public static DocumentDao docDao;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +58,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        final Context context = this;
+        docDao = new DocumentDao(context);
+        docDao.open();
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -65,7 +71,9 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(MainActivity.this, "home", Toast.LENGTH_SHORT).show();
                         break;
                     case R.id.shopping_cart:
-                        Toast.makeText(MainActivity.this, "shopping_cart", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent();
+                        intent.setClass(context, FetchDocsRequest.class);
+                        startActivity(intent);
                         break;
                 }
                     return true;
@@ -84,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
                 docApt.notifyDataSetChanged();
             }
         });
+
     }
 
     @Override
@@ -92,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -129,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
                         try {
                             JSONObject obj = new JSONObject(response);
                             JSONArray jsonArray = obj.getJSONArray("docs");
-                            System.out.println("jsonArray size "+jsonArray.length());
+                            Log.i("getDocs","jsonArray size "+jsonArray.length());
 
                             for(int i=0;i<jsonArray.length();i++){
 
@@ -141,7 +151,6 @@ public class MainActivity extends AppCompatActivity {
                                 doc.setPrix(Float.parseFloat(array.get(1).toString()));
 
                                 String str = array.get(2).toString();
-                                Log.i("Length ByteArray ",str.getBytes().length+" ");
                                 InputStream is = new ByteArrayInputStream(Base64.decode(str,Base64.DEFAULT));
                                 Bitmap bitmap =  BitmapFactory.decodeStream(is);
                                 doc.setImage(bitmap);
@@ -156,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
                             }
 
                         } catch (JSONException e) {
-                            System.out.println("JSONException");
+                            Log.e("getDocs JSONException",e.getMessage());
                             e.printStackTrace();
                         }catch (Throwable e) {
                             e.printStackTrace();
@@ -168,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        System.out.println("ErrorListener");
+                        Log.e("getDocs ErrorListener",error.getMessage());
                         error.printStackTrace();
                     }
                 }

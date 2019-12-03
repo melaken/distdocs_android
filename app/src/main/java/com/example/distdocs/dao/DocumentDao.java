@@ -4,6 +4,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.util.Log;
 
@@ -11,6 +13,8 @@ import com.example.distdocs.entities.Constante;
 import com.example.distdocs.entities.DocsAchetes;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,7 +29,10 @@ public class DocumentDao {
 
 
     public DocumentDao(Context ctx) {
+
         dbh = new DataBaseHandler(ctx, Constante.nom_base,null,1);
+        open();
+        close();
     }
     public void open(){
         db = dbh.getWritableDatabase();
@@ -35,12 +42,14 @@ public class DocumentDao {
         db.close();
     }
     public void updateDbWithDocs(List<DocsAchetes> liste){
+        open();
         for(DocsAchetes doc : liste)
             addDocument(doc);
+        close();
     }
     public void addDocument(DocsAchetes doc){
         ContentValues vals = new ContentValues();
-        System.out.println("stream_doc "+doc.getDocument().toString());
+//        System.out.println("stream_doc "+doc.getDocument().toString());
         vals.put("doc_id",doc.getDocId());
         vals.put("premiere_couverture",doc.getPremiere_couverture());
         vals.put("last_update",doc.getLastUpdate().toString());
@@ -49,11 +58,10 @@ public class DocumentDao {
         try {
             System.out.println("try in addDoc ");
             storeStream(doc.getCover(), Constante.COVER, doc.getPremiere_couverture());
-            storeStream(doc.getDocument(), Constante.BOOKS, doc.getDocId() + "");
-            db = dbh.getWritableDatabase();
+//            storeStream(doc.getDocument(), Constante.BOOKS, doc.getDocId() + "");
             long res = db.insert(Constante.table_docs, null, vals);
-            db.close();
         }catch(Throwable e){
+            Log.e("StoreStream","error "+e.getMessage());
             e.printStackTrace();
         }
     }
@@ -64,19 +72,19 @@ public class DocumentDao {
             apkStorage.mkdir();
             Log.e(TAG, "Directory Created.");
         }
-        System.out.println("path" +apkStorage.getAbsoluteFile());
+        Log.e("storeStream","path" +apkStorage.getAbsoluteFile());
 
         File outputFile = new File(apkStorage ,fileName);
         //Create New File if not present
         if (!outputFile.exists()) {
             apkStorage.createNewFile();
-            Log.e(TAG, "file Created");
-            System.out.println("in if storeStream");
+            Log.e("storeStream", "file Created");
+            Log.e("storeStream", "in if");
         }
 
         //écritures des fichiers sur le disque
         FileOutputStream fos = new FileOutputStream(outputFile);
-        System.out.println("after if storeStream");
+        Log.e("storeStream", "after if");
         byte[] buffer = new byte[1024];//Set buffer type
         int len1 = 0;//init length
         while ((len1 = is.read(buffer)) != -1) {
@@ -132,8 +140,10 @@ public class DocumentDao {
             Cursor c = db.rawQuery("select doc_id, premiere_couverture, last_update from " + Constante.table_docs, null);
             while(c.moveToNext()){
                 DocsAchetes doc = new DocsAchetes();
-                doc.setPremiere_couverture(c.getString(0));
-                doc.setDocId(c.getInt(1));
+                String pc = c.getString(1);
+                doc.setPremiere_couverture(pc);
+                doc.setDocId(c.getInt(0));
+                doc.setBitmapCover(getBitmap(pc,Constante.COVER));
                 liste.add(doc);
             }
         } catch (Throwable e) {
@@ -141,5 +151,22 @@ public class DocumentDao {
         }
         db.close();
         return liste;
+    }
+    private Bitmap getBitmap(String doc_cover,String dir){
+        File file = new File(
+                Environment.getExternalStorageDirectory() + dir
+                        + "/",doc_cover);
+        Bitmap bm = null;
+        try {
+            InputStream stream = stream = new FileInputStream(file);
+            Log.i("getBitmap","after read stream");
+            bm = BitmapFactory.decodeStream(stream);
+
+
+        } catch (FileNotFoundException e) {
+            Log.e("getBitmap","error "+e.getMessage());
+            e.printStackTrace();
+        }
+        return bm;
     }
 }

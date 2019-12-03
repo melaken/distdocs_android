@@ -1,8 +1,9 @@
-package com.example.distdocs.beans;
+package com.example.distdocs.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -26,41 +27,33 @@ public class DocumentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.display_doc_layout);
 
-        String doc_name = "CondoLiving.pdf";
-        String doc_cover = "CondoLiving_cover.jpg";
+//        String doc_name = "CondoLiving.pdf";
+//        String doc_cover = "CondoLiving_cover.jpg";
+//        File doc = new File(
+//                Environment.getExternalStorageDirectory() + "/"
+//                        + "distdocs",doc_name);
+//        File cover = new File(
+//                Environment.getExternalStorageDirectory() + "/"
+//                        + "distdocs",doc_cover);
+
+
+        String path = getIntent().getStringExtra("path");
         File doc = new File(
-                Environment.getExternalStorageDirectory() + "/"
-                        + "distdocs",doc_name);
-        File cover = new File(
-                Environment.getExternalStorageDirectory() + "/"
-                        + "distdocs",doc_cover);
-
-        DocumentDao docDao = new DocumentDao(this);
-        DocsAchetes lastDoc = docDao.lastInsertDoc();
-        System.out.println("lastDOc id="+lastDoc.getDocId()+" cover="+lastDoc.getPremiere_couverture()+" date="+lastDoc.getLastUpdate());
-
-        DocsAchetes da = new DocsAchetes();
-        da.setDocId(2);
-//        da.setCover(readFile(cover));
-//        da.setDocument(readFile(doc));
-        da.setPremiere_couverture(cover.getName());
-        da.setLastUpdate(Timestamp.valueOf("2019-11-20 11:32:11"));
-        docDao.addDocument(da);
-
-        da = docDao.lastInsertDoc();
-
+                Environment.getExternalStorageDirectory() + path);
         Intent intent=getIntent();
         PDFView pdfView = (PDFView) findViewById(R.id.pdfView);
 
-//        pdfView.fromBytes(da.getDocument()).enableSwipe(true) // allows to block changing pages using swipe
-//                .swipeHorizontal(false)
-//                .enableDoubletap(true)
-//                .defaultPage(0).password(null)
-//                .load();
+        try {
 
-
-//        String path=Constante.PROTOCOLE+ Constante.SERVER+Constante.BOOKS+"/"+8;
-//
+            pdfView.fromStream(new FileInputStream(doc)).enableSwipe(true) // allows to block changing pages using swipe
+                    .swipeHorizontal(false)
+                    .enableDoubletap(true)
+                    .defaultPage(0).password(null)
+                    .load();
+        } catch (FileNotFoundException e) {
+            Log.e("DocumentACtivity","error "+e.getMessage());
+            e.printStackTrace();
+        }
 
     }
 

@@ -1,8 +1,17 @@
-package com.example.distdocs.dao;
+package com.example.distdocs.activities;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Base64;
+import android.util.Log;
+import android.view.MenuItem;
+import android.widget.GridView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -11,9 +20,13 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.distdocs.R;
+import com.example.distdocs.accessories.BiblioAdapter;
+import com.example.distdocs.dao.DocumentDao;
 import com.example.distdocs.entities.Constante;
 import com.example.distdocs.entities.DocsAchetes;
-import com.example.distdocs.entities.ResponseCallback;
+import com.example.distdocs.accessories.ResponseCallback;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,48 +43,62 @@ import java.util.Map;
 public class FetchDocsRequest  extends Activity {
 
     List<DocsAchetes> da= new ArrayList<>();
-    DocumentDao docDao = new DocumentDao(this);
-    //Progress bar to check the progress of obtaining pdfs
-    ProgressDialog progressDialog;
+    DocumentDao docDao = MainActivity.docDao;
+    GridView gridView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //initializing progressDialog
 
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Downloading...");
+        final Context context = this;
+        setContentView(R.layout.bibliotek);
 
-        getDocsFromServer(new ResponseCallback() {
+        getNewBoughtDocs(new ResponseCallback() {
             @Override
             public void onLoginSuccess(String result) {
-                List<DocsAchetes> liste = docDao.listAllDocs();
-                for(DocsAchetes d : liste){
-                    System.out.println("cover "+d.getPremiere_couverture()+" id "+d.getDocId());
-                }
+                da= docDao.listAllDocs();
+                BiblioAdapter docApt = new BiblioAdapter(FetchDocsRequest.this,R.layout.bibliotek_item,da,context);
+                gridView = (GridView) findViewById(R.id.biblioGridView);
+                Log.i("docApt",""+docApt);
+                gridView.setAdapter(docApt);
+                docApt.notifyDataSetChanged();
             }
+        },this);
+
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation_bib);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.home_icon:
+                        Toast.makeText(FetchDocsRequest.this, "home", Toast.LENGTH_SHORT).show();
+                        break;
+                    case R.id.shopping_cart:
+                        Intent intent = new Intent();
+                        intent.setClass(context, FetchDocsRequest.class);
+                        startActivity(intent);
+                        break;
+                }
+                return true;
+            }
+
         });
 
-
-
-
     }
-    public void getDocsFromServer(final ResponseCallback responseCallback){
+    public void getNewBoughtDocs(final ResponseCallback responseCallback, Context context){
         final String lastDate =  docDao.lastInsertDatetime();
-        System.out.println("lastUpdate "+lastDate);
+        Log.i("getNewBoughtDocs","lastUpdate "+lastDate);
 
-//        RequestListener reqLis = new RequestListener<String>();
         StringRequest stringRequest = new StringRequest(Request.Method.POST,
-                Constante.PROTOCOLE+Constante.SERVER+Constante.PORT+Constante.app_name+ Constante.webService,
-//                    reqLis
+                Constante.PROTOCOLE+Constante.SERVER+Constante.PORT+Constante.app_name+ Constante.newBoughtDocs,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        progressDialog.dismiss();
                         try {
                             JSONObject obj = new JSONObject(response);
                             JSONArray jsonArray = obj.getJSONArray("docs");
-                            System.out.println("jsonArray size "+jsonArray.length());
+                            Log.i("getNewBoughtDocs","jsonArray size "+jsonArray.length());
 
                             for(int i=0;i<jsonArray.length();i++){
 
@@ -82,26 +109,23 @@ public class FetchDocsRequest  extends Activity {
                                 int doc_id = Integer.parseInt(array.get(1).toString());
                                 String premiere_couverture = array.get(0).toString();
                                 Timestamp lastUpdate = Timestamp.valueOf(array.get(2).toString());
-                                InputStream cover_stream = new ByteArrayInputStream(array.get(3).toString().getBytes());
-                                InputStream doc_stream = new ByteArrayInputStream(array.get(4).toString().getBytes());
-
+                                InputStream cover_stream = new ByteArrayInputStream(Base64.decode(array.get(3).toString(),Base64.DEFAULT));
+//                                InputStream doc_stream = new ByteArrayInputStream(Base64.decode(array.get(4).toString(),Base64.DEFAULT));
 
                               doc.setDocId(doc_id);
                               doc.setPremiere_couverture(premiere_couverture);
                               doc.setLastUpdate(lastUpdate);
                               doc.setCover(cover_stream);
-                              doc.setDocument(doc_stream);
+//                              doc.setDocument(doc_stream);
 
                               da.add(doc);
 
                             }
 
                             docDao.updateDbWithDocs(da);
-                            System.out.println("size da "+da.size());
-                            System.out.println("da and "+da);
+                            Log.i("getNewBoughtDocs","size da "+da.size());
                             if (responseCallback != null) {
                                 responseCallback.onLoginSuccess(response);
-//                                progressDialog.dismiss();
                             }
 
                         } catch (JSONException e) {
@@ -135,8 +159,7 @@ public class FetchDocsRequest  extends Activity {
         };
 
 
-//        ApplicationController.getInstance().addToRequestQueue(stringRequest);
-        RequestQueue request = Volley.newRequestQueue(this);
+        RequestQueue request = Volley.newRequestQueue(context);
         request.add(stringRequest);
 
     }

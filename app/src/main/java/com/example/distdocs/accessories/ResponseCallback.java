@@ -1,4 +1,4 @@
-package com.example.distdocs.entities;
+package com.example.distdocs.accessories;
 
 public interface ResponseCallback {
     public void onLoginSuccess(String result);

@@ -28,10 +28,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".dao.FetchDocsRequest">
+        <activity android:name=".activities.FetchDocsRequest">
 
         </activity>
-        <activity android:name=".beans.DocumentActivity">
+        <activity android:name=".activities.DocumentActivity">
 
         </activity>
     </application>

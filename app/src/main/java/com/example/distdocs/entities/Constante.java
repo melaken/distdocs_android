@@ -13,7 +13,7 @@ public class Constante {
     public static final String column_data_achat = "date_achat";
     public static final String column_id = "doc_id";
     public static final String email = "kam@yahoo.fr";
-    public static final String webService ="/send";
+    public static final String newBoughtDocs ="/send";
     public static final String getDocs = "/getAllDocs";
     public static final String app_name = "/distdocs";
     public static  final String DIRECTORY = "/distdocs";

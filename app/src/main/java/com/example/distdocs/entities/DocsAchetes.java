@@ -1,5 +1,7 @@
 package com.example.distdocs.entities;
 
+import android.graphics.Bitmap;
+
 import java.io.InputStream;
 import java.sql.Timestamp;
 
@@ -10,15 +12,9 @@ public class DocsAchetes {
 	private InputStream document;
 	private String premiere_couverture;
 	private Timestamp lastUpdate;
+	private Bitmap bitmapCover;
+	private Bitmap bitmapDoc;
 
-
-//	public DocsAchetes(long docId, String premiere_couverture, Timestamp lastUpdate) {
-//		this.docId = docId;
-//		this.cover = cover;
-//		this.document = document;
-//		this.premiere_couverture = premiere_couverture;
-//		this.lastUpdate = lastUpdate;
-//	}
 
 	public String toString() {
 		return " docId = "+docId;
@@ -60,5 +56,21 @@ public class DocsAchetes {
 
 	public void setDocument(InputStream document) {
 		this.document = document;
+	}
+
+	public Bitmap getBitmapCover() {
+		return bitmapCover;
+	}
+
+	public void setBitmapCover(Bitmap bitmapCover) {
+		this.bitmapCover = bitmapCover;
+	}
+
+	public Bitmap getBitmapDoc() {
+		return bitmapDoc;
+	}
+
+	public void setBitmapDoc(Bitmap bitmapDoc) {
+		this.bitmapDoc = bitmapDoc;
 	}
 }

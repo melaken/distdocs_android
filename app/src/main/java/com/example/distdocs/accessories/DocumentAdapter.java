@@ -1,4 +1,4 @@
-package com.example.distdocs.entities;
+package com.example.distdocs.accessories;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 
 import com.example.distdocs.R;
+import com.example.distdocs.entities.Document;
 
 import java.util.List;
 public class DocumentAdapter extends ArrayAdapter<Document> {

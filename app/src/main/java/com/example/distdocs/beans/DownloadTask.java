@@ -11,7 +11,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.distdocs.entities.Constante;
 import com.example.distdocs.entities.Document;
-import com.example.distdocs.entities.ResponseCallback;
+import com.example.distdocs.accessories.ResponseCallback;
 
 import org.json.JSONArray;
 import org.json.JSONException;
