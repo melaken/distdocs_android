@@ -2,12 +2,13 @@ package com.example.distdocs.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.GridView;
 import android.widget.Toast;
 
@@ -23,16 +24,12 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.distdocs.R;
 import com.example.distdocs.beans.DocumentActivity;
-import com.example.distdocs.beans.DownloadTask;
 import com.example.distdocs.dao.FetchDocsRequest;
-import com.example.distdocs.entities.ApplicationController;
 import com.example.distdocs.entities.Constante;
 import com.example.distdocs.entities.Document;
 import com.example.distdocs.entities.DocumentAdapter;
 import com.example.distdocs.entities.ResponseCallback;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,7 +38,6 @@ import org.json.JSONObject;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     //ListView to show the fetched Pdfs from the server
@@ -59,33 +55,24 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-//
-//        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
-//        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-//            @Override
-//            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-//                switch (item.getItemId()) {
-//                    case R.id.home_icon:
-//                        Toast.makeText(MainActivity.this, "home", Toast.LENGTH_SHORT).show();
-//                        break;
-//                    case R.id.shopping_cart:
-//                        Toast.makeText(MainActivity.this, "shopping_cart", Toast.LENGTH_SHORT).show();
-//                        break;
-//                }
-//                    return true;
-//                }
-//
-//        });
 
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.home_icon:
+                        Toast.makeText(MainActivity.this, "home", Toast.LENGTH_SHORT).show();
+                        break;
+                    case R.id.shopping_cart:
+                        Toast.makeText(MainActivity.this, "shopping_cart", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+                    return true;
+                }
 
-//        FloatingActionButton fab = findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
+        });
+
         getDocs(new ResponseCallback() {
             @Override
             public void onLoginSuccess(String result) {
@@ -139,7 +126,6 @@ public class MainActivity extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-//                        progressDialog.dismiss();
                         try {
                             JSONObject obj = new JSONObject(response);
                             JSONArray jsonArray = obj.getJSONArray("docs");
@@ -157,11 +143,9 @@ public class MainActivity extends AppCompatActivity {
                                 String str = array.get(2).toString();
                                 Log.i("Length ByteArray ",str.getBytes().length+" ");
                                 InputStream is = new ByteArrayInputStream(Base64.decode(str,Base64.DEFAULT));
-//                                InputStream is = new ByteArrayInputStream(str.getBytes());
-//                                doc.setImage(str.getBytes());
-                                doc.setImage(is);
+                                Bitmap bitmap =  BitmapFactory.decodeStream(is);
+                                doc.setImage(bitmap);
                                 doc.setPremiereCouverture(str);
-//                                Log.i("Size is",is.available()+"");
 
                                 docList.add(doc);
                             }
@@ -169,7 +153,6 @@ public class MainActivity extends AppCompatActivity {
                             System.out.println("size da "+docList.size());
                             if (responseCallback != null) {
                                 responseCallback.onLoginSuccess(response);
-//                                progressDialog.dismiss();
                             }
 
                         } catch (JSONException e) {
@@ -197,8 +180,6 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-//        ApplicationController.getInstance().addToRequestQueue(stringRequest);
-//        ApplicationController.getInstance().getRequestQueue().start();
         RequestQueue request = Volley.newRequestQueue(this);
         request.add(stringRequest);
 

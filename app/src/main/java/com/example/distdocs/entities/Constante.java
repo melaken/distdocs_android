@@ -4,7 +4,7 @@ public class Constante {
 //    public static  final String SERVER = "http://myracenter.homeip.net";
 //public static  final String DIRECTORY = "/home/myra";
     public static  final String PROTOCOLE = "http://";
-//    public static  final String SERVER = "192.168.1.85";
+//    public static  final String SERVER = "192.168.2.139";
     public static  final String SERVER = "10.42.0.1";
     public static  final String PORT =":8088";
     public static final String table_doc = "Document";

@@ -13,17 +13,15 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+
 import com.example.distdocs.R;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
-
 public class DocumentAdapter extends ArrayAdapter<Document> {
     Activity activity;
     int layoutResourceId;
     List<Document> data;
-//    Document doc;
+    //    Document doc;
     int nb = 0;
 
     public DocumentAdapter(Activity activity, int layoutResourceId, List<Document> data) {
@@ -50,6 +48,7 @@ public class DocumentAdapter extends ArrayAdapter<Document> {
             holder.image = (ImageView)row.findViewById(R.id.imageView);
 
             row.setTag(holder);
+
         }
         else
         {
@@ -57,22 +56,20 @@ public class DocumentAdapter extends ArrayAdapter<Document> {
         }
         Document doc = data.get(position);
 
-
-        InputStream data = doc.getImage();
-        Bitmap bm = BitmapFactory.decodeStream(data);
+        Bitmap bm = doc.getImage();
         Log.e("Image Display"," after call getImage "+bm+" "+doc.getId());
-        if(bm != null){
+//        if(bm != null){
             holder.prix.setText(doc.getPrix()+"  FCFA");
-        }
-        else {
+//        }
+        if(bm == null){
             nb++;
             bm = BitmapFactory.decodeResource(activity.getResources(), R.mipmap.text);
-            holder.prix.setText(null);
+//            holder.prix.setText(null);
         }
 
         holder.image.setImageBitmap(bm);
         Log.e("After setImage","nb erreurs "+nb);
+
         return row;
     }
-
 }

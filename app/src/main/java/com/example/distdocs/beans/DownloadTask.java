@@ -2,19 +2,14 @@ package com.example.distdocs.beans;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.os.AsyncTask;
-import android.util.Log;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.distdocs.entities.ApplicationController;
 import com.example.distdocs.entities.Constante;
-import com.example.distdocs.entities.DocsAchetes;
 import com.example.distdocs.entities.Document;
 import com.example.distdocs.entities.ResponseCallback;
 
@@ -22,22 +17,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class DownloadTask {
     private static final String TAG = "Download Task";
@@ -112,8 +93,7 @@ public class DownloadTask {
                 }
             };
 
-            ApplicationController.getInstance().addToRequestQueue(stringRequest);
-            ApplicationController.getInstance().getRequestQueue().start();
-
+         RequestQueue request = Volley.newRequestQueue(context);
+         request.add(stringRequest);
         }
 }
