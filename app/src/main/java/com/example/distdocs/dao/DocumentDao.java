@@ -65,7 +65,7 @@ public class DocumentDao {
             e.printStackTrace();
         }
     }
-    private void storeStream(InputStream is,String dir,String fileName) throws IOException {
+    public static void storeStream(InputStream is,String dir,String fileName) throws IOException {
 
         File apkStorage =  new File(Environment.getExternalStorageDirectory() +dir);
         if (!apkStorage.exists()) {

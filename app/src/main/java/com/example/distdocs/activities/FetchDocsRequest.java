@@ -56,7 +56,7 @@ public class FetchDocsRequest  extends Activity {
 
         getNewBoughtDocs(new ResponseCallback() {
             @Override
-            public void onLoginSuccess(String result) {
+            public void onLoginSuccess(Object result) {
                 da= docDao.listAllDocs();
                 BiblioAdapter docApt = new BiblioAdapter(FetchDocsRequest.this,R.layout.bibliotek_item,da,context);
                 gridView = (GridView) findViewById(R.id.biblioGridView);

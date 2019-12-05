@@ -55,13 +55,14 @@ public class MainActivity extends AppCompatActivity {
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Downloading... Please Wait");
         progressDialog.show();
+        Log.i("MainActivity","zero");
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         final Context context = this;
         docDao = new DocumentDao(context);
         docDao.open();
-
+        Log.i("MainActivity","first");
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -80,10 +81,10 @@ public class MainActivity extends AppCompatActivity {
                 }
 
         });
-
+        Log.i("MainActivity","2nd");
         getDocs(new ResponseCallback() {
             @Override
-            public void onLoginSuccess(String result) {
+            public void onLoginSuccess(Object result) {
                 progressDialog.dismiss();
                 DocumentAdapter docApt = new DocumentAdapter(MainActivity.this,R.layout.doc_layout,docList);
                 gridView = (GridView) findViewById(R.id.accueilGridView);

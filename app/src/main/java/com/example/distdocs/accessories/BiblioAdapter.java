@@ -32,36 +32,23 @@ public class BiblioAdapter extends ArrayAdapter<DocsAchetes> {
         this.data=data;
         context = con;
     }
-    class BiblioHolder
-    {
+    class BiblioHolder {
         ImageView image;
+        int docId;
     }
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View row=convertView;
         BiblioHolder holder=null;
-        if(row==null)
-        {
+        if(row==null){
             LayoutInflater inflater=LayoutInflater.from(activity);
             row=inflater.inflate(layoutResourceId,parent,false);
             holder=new BiblioHolder();
             holder.image = (ImageView)row.findViewById(R.id.biblioImage);
 
-            final String path = "/distdocs/"+"CondoLiving.pdf";
-            holder.image.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    Intent intent = new Intent();
-                    intent.putExtra("path",path);
-                    intent.setClass(context, DocumentActivity.class);
-                    activity.startActivity(intent);
-                }
-            });
-
             row.setTag(holder);
-
         }
-        else
-        {
+        else{
             holder= (BiblioHolder) row.getTag();
         }
         DocsAchetes doc = data.get(position);
@@ -73,6 +60,19 @@ public class BiblioAdapter extends ArrayAdapter<DocsAchetes> {
         }
 
         holder.image.setImageBitmap(bm);
+        holder.docId = doc.getDocId();
+
+//        final String path = "/distdocs/"+"CondoLiving.pdf";
+        final String path = Constante.BOOKS+"/"+holder.docId;
+        final String fileName = holder.docId+"";
+        holder.image.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.putExtra("fileName",fileName);
+                intent.setClass(context, DocumentActivity.class);
+                activity.startActivity(intent);
+            }
+        });
 
         return row;
     }
