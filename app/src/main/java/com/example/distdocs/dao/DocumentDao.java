@@ -9,7 +9,7 @@ import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.util.Log;
 
-import com.example.distdocs.entities.Constante;
+import com.example.distdocs.accessories.Constante;
 import com.example.distdocs.entities.DocsAchetes;
 
 import java.io.File;
@@ -18,7 +18,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,9 +29,10 @@ public class DocumentDao {
 
     public DocumentDao(Context ctx) {
 
-        dbh = new DataBaseHandler(ctx, Constante.nom_base,null,1);
-        open();
-        close();
+        dbh = new DataBaseHandler(ctx, Constante.nom_base,null,3);
+        //force dbh to create new table if exists
+//        open();
+//        close();
     }
     public void open(){
         db = dbh.getWritableDatabase();
@@ -168,5 +168,33 @@ public class DocumentDao {
             e.printStackTrace();
         }
         return bm;
+    }
+    public String getKey(){
+        db = dbh.getReadableDatabase();
+        Log.i("Dao getKey","before req");
+        String cle = null;
+        try {
+            Cursor c = db.rawQuery("select cle from Cles",null);
+            if (c.getCount() > 0) {
+                c.moveToFirst();
+                cle = c.getString(0);
+                c.close();
+            }
+
+        }catch (Throwable e){
+            Log.e("Dao getKey","erro "+e.getMessage());
+            e.printStackTrace();
+        }
+            db.close();
+        Log.i("Dao getKey","cle "+cle);
+        return cle;
+    }
+    public void insertKey(String key){
+        ContentValues vals = new ContentValues();
+        vals.put("cle",key);
+        open();
+        db.insert(Constante.table_cle, null, vals);
+
+        close();
     }
 }

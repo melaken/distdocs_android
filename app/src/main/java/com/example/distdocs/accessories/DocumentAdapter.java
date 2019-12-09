@@ -23,7 +23,6 @@ public class DocumentAdapter extends ArrayAdapter<Document> {
     int layoutResourceId;
     List<Document> data;
     //    Document doc;
-    int nb = 0;
 
     public DocumentAdapter(Activity activity, int layoutResourceId, List<Document> data) {
         super(activity, layoutResourceId, data);
@@ -63,13 +62,11 @@ public class DocumentAdapter extends ArrayAdapter<Document> {
             holder.prix.setText(doc.getPrix()+"  FCFA");
 //        }
         if(bm == null){
-            nb++;
             bm = BitmapFactory.decodeResource(activity.getResources(), R.mipmap.text);
 //            holder.prix.setText(null);
         }
 
         holder.image.setImageBitmap(bm);
-        Log.e("After setImage","nb erreurs "+nb);
 
         return row;
     }

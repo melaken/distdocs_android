@@ -14,7 +14,6 @@ import android.widget.ImageView;
 
 import com.example.distdocs.R;
 import com.example.distdocs.activities.DocumentActivity;
-import com.example.distdocs.entities.Constante;
 import com.example.distdocs.entities.DocsAchetes;
 
 import java.util.List;
@@ -54,7 +53,7 @@ public class BiblioAdapter extends ArrayAdapter<DocsAchetes> {
         DocsAchetes doc = data.get(position);
 
         Bitmap bm = doc.getBitmapCover();
-        Log.e("Image Display"," after call getImage "+bm+" "+doc.getDocId());
+        Log.i("Image Display"," after call getImage "+bm+" "+doc.getDocId());
         if(bm == null){
             bm = BitmapFactory.decodeResource(activity.getResources(), R.mipmap.text);
         }
@@ -62,7 +61,6 @@ public class BiblioAdapter extends ArrayAdapter<DocsAchetes> {
         holder.image.setImageBitmap(bm);
         holder.docId = doc.getDocId();
 
-//        final String path = "/distdocs/"+"CondoLiving.pdf";
         final String path = Constante.BOOKS+"/"+holder.docId;
         final String fileName = holder.docId+"";
         holder.image.setOnClickListener(new View.OnClickListener() {

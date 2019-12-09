@@ -3,6 +3,8 @@ package com.example.distdocs.activities;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Base64;
@@ -21,33 +23,35 @@ import com.android.volley.toolbox.Volley;
 import com.example.distdocs.R;
 import com.example.distdocs.accessories.ResponseCallback;
 import com.example.distdocs.dao.DocumentDao;
-import com.example.distdocs.entities.Constante;
-import com.example.distdocs.entities.DocsAchetes;
-import com.example.distdocs.entities.Document;
+import com.example.distdocs.accessories.Constante;
+import com.example.distdocs.encryption.CryptoException;
+import com.example.distdocs.encryption.CryptoUtils;
 import com.github.barteksc.pdfviewer.PDFView;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class DocumentActivity extends AppCompatActivity {
     File doc;
     String fileName;
     private ProgressDialog progressDialog;
+    private DocumentDao dao;
+    private String key;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        dao = new DocumentDao(this);
+        key = getKey();
         setContentView(R.layout.display_doc_layout);
         progressDialog = new ProgressDialog(this);
 
@@ -55,38 +59,48 @@ public class DocumentActivity extends AppCompatActivity {
          doc = new File(
                 Environment.getExternalStorageDirectory()+ Constante.BOOKS+"/"+ fileName);
         if(!doc.exists()){
-
             progressDialog.setMessage("Downloading... Please Wait");
             progressDialog.show();
+
             dowloadFile(new ResponseCallback() {
                 @Override
                 public void onLoginSuccess(Object result) {
                     progressDialog.dismiss();
-                    openDoc(doc);
+                    try {
+                        byte[] outputBytes = CryptoUtils.decrypt(key, new FileInputStream(doc));
+                        openDoc(outputBytes);
+                    } catch (CryptoException e) {
+                        e.printStackTrace();
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+
                 }
             },this,fileName);
-        }else{
-            openDoc(doc);
-        }
 
+        }else {
+            try {
+                byte[] outputBytes = CryptoUtils.decrypt(key, new FileInputStream(doc));
+                openDoc(outputBytes);
+            } catch (CryptoException e) {
+                e.printStackTrace();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
-    private void openDoc(File doc){
+    private void openDoc(byte [] bytes){
         Intent intent=getIntent();
         PDFView pdfView = (PDFView) findViewById(R.id.pdfView);
 
-        try {
-
-            pdfView.fromStream(new FileInputStream(doc)).enableSwipe(true) // allows to block changing pages using swipe
-                    .swipeHorizontal(false)
+            pdfView.fromBytes(bytes).enableSwipe(true) // allows to block changing pages using swipe
+                    .swipeHorizontal(true)
                     .enableDoubletap(true)
                     .defaultPage(0).password(null)
                     .load();
-        } catch (FileNotFoundException e) {
-            Log.e("DocumentACtivity","error "+e.getMessage());
-            e.printStackTrace();
-        }
     }
+
     private void dowloadFile(final ResponseCallback responseCallback, final Context context, final String fileName){
         final String docName = fileName;
         StringRequest stringRequest = new StringRequest(Request.Method.POST,
@@ -96,8 +110,13 @@ public class DocumentActivity extends AppCompatActivity {
             public void onResponse(String response) {
                 try {
                     JSONObject obj = new JSONObject(response);
+                    Log.i("dowloadFile","before decode64");
                     InputStream doc_stream = new ByteArrayInputStream(Base64.decode(obj.getString("doc"),Base64.DEFAULT));
-                    DocumentDao.storeStream(doc_stream,Constante.BOOKS,fileName);
+                    Log.i("dowloadFile","before crypto");
+                    byte[] outputBytes = CryptoUtils.encrypt(key, doc_stream);
+                    Log.i("dowloadFile","before storestream");
+                    DocumentDao.storeStream(new ByteArrayInputStream(outputBytes),Constante.BOOKS,fileName);
+                    Log.i("dowloadFile","after storestream");
 
                     if (responseCallback != null) {
                         responseCallback.onLoginSuccess(response);
@@ -149,6 +168,16 @@ public class DocumentActivity extends AppCompatActivity {
         RequestQueue request = Volley.newRequestQueue(context);
         request.add(stringRequest);
 
+    }
+    private String getKey(){
+        String key = dao.getKey();
+        if( key== null) {
+            Log.i("getKey","In if getKey");
+            key = UUID.randomUUID().toString().substring(0, 16);
+            dao.insertKey(key);
+        }
+        Log.i("getKey",key);
+        return key;
     }
 
 }

@@ -25,7 +25,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.distdocs.R;
 import com.example.distdocs.dao.DocumentDao;
-import com.example.distdocs.entities.Constante;
+import com.example.distdocs.accessories.Constante;
 import com.example.distdocs.entities.Document;
 import com.example.distdocs.accessories.DocumentAdapter;
 import com.example.distdocs.accessories.ResponseCallback;
@@ -45,9 +45,7 @@ public class MainActivity extends AppCompatActivity {
     //an array to hold the different pdf objects
     ArrayList<Document> docList= new ArrayList<>();
     private ProgressDialog progressDialog;
-    public static DocumentDao docDao;
-
-
+//    public static DocumentDao docDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,19 +58,19 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         final Context context = this;
-        docDao = new DocumentDao(context);
-        docDao.open();
         Log.i("MainActivity","first");
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Intent intent = new Intent();
                 switch (item.getItemId()) {
                     case R.id.home_icon:
-                        Toast.makeText(MainActivity.this, "home", Toast.LENGTH_SHORT).show();
+                        intent.setClass(context, MainActivity.class);
+                        startActivity(intent);
                         break;
                     case R.id.shopping_cart:
-                        Intent intent = new Intent();
+
                         intent.setClass(context, FetchDocsRequest.class);
                         startActivity(intent);
                         break;
@@ -178,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e("getDocs ErrorListener",error.getMessage());
+                        Log.e("getDocs ErrorListener","");
                         error.printStackTrace();
                     }
                 }

@@ -1,5 +1,9 @@
 package com.example.distdocs.accessories;
 
+import android.content.Context;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -47,4 +51,37 @@ public class MethodesAccessoires {
         return bos != null ? bos.toByteArray() : null;
     }
 
+    private  void getMACAdress(){
+//        WifiManager manager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+//        WifiInfo info = manager.getConnectionInfo();
+//        String address = info.getMacAddress();
+//        return  address;
+    }
+    //else{
+    ////            String key = getKey();
+    ////            Log.i("MAC",key+"size "+key.length());
+    ////            File encryptedFile =  new File(
+    ////                    Environment.getExternalStorageDirectory()+ Constante.BOOKS+"/"+ "10"+"_encrypt");
+    ////
+    ////            try {
+    ////                if(!encryptedFile.exists())
+    ////                    encryptedFile.createNewFile();
+    ////                FileInputStream fis = new FileInputStream(doc);
+    ////                FileOutputStream fos = new FileOutputStream(encryptedFile);
+    ////
+    ////               byte[] outputBytes = CryptoUtils.encrypt(key, fis);
+    ////               fos.write(outputBytes);
+    ////
+    ////                FileInputStream fis = new FileInputStream(encryptedFile);
+    ////                byte[] outputBytes = CryptoUtils.decrypt(key, fis);
+    ////
+    ////                openDoc(outputBytes);
+    ////
+    ////            } catch (CryptoException e) {
+    ////                e.printStackTrace();
+    ////            } catch (IOException e) {
+    ////                e.printStackTrace();
+    ////            }
+    //////            openDoc(encryptedFile);
+    ////
 }

@@ -1,7 +1,6 @@
 package com.example.distdocs.activities;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,7 +8,6 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.GridView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -23,7 +21,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.distdocs.R;
 import com.example.distdocs.accessories.BiblioAdapter;
 import com.example.distdocs.dao.DocumentDao;
-import com.example.distdocs.entities.Constante;
+import com.example.distdocs.accessories.Constante;
 import com.example.distdocs.entities.DocsAchetes;
 import com.example.distdocs.accessories.ResponseCallback;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -43,13 +41,12 @@ import java.util.Map;
 public class FetchDocsRequest  extends Activity {
 
     List<DocsAchetes> da= new ArrayList<>();
-    DocumentDao docDao = MainActivity.docDao;
+    DocumentDao docDao = new DocumentDao(this);
     GridView gridView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //initializing progressDialog
 
         final Context context = this;
         setContentView(R.layout.bibliotek);
@@ -70,12 +67,13 @@ public class FetchDocsRequest  extends Activity {
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Intent intent = new Intent();
                 switch (item.getItemId()) {
                     case R.id.home_icon:
-                        Toast.makeText(FetchDocsRequest.this, "home", Toast.LENGTH_SHORT).show();
+                        intent.setClass(context, MainActivity.class);
+                        startActivity(intent);
                         break;
                     case R.id.shopping_cart:
-                        Intent intent = new Intent();
                         intent.setClass(context, FetchDocsRequest.class);
                         startActivity(intent);
                         break;
@@ -110,13 +108,11 @@ public class FetchDocsRequest  extends Activity {
                                 String premiere_couverture = array.get(0).toString();
                                 Timestamp lastUpdate = Timestamp.valueOf(array.get(2).toString());
                                 InputStream cover_stream = new ByteArrayInputStream(Base64.decode(array.get(3).toString(),Base64.DEFAULT));
-//                                InputStream doc_stream = new ByteArrayInputStream(Base64.decode(array.get(4).toString(),Base64.DEFAULT));
 
                               doc.setDocId(doc_id);
                               doc.setPremiere_couverture(premiere_couverture);
                               doc.setLastUpdate(lastUpdate);
                               doc.setCover(cover_stream);
-//                              doc.setDocument(doc_stream);
 
                               da.add(doc);
 

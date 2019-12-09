@@ -1,4 +1,4 @@
-package com.example.distdocs.entities;
+package com.example.distdocs.accessories;
 
 public class Constante {
 //    public static  final String SERVER = "http://myracenter.homeip.net";
@@ -8,6 +8,7 @@ public class Constante {
 //    public static  final String SERVER = "10.42.0.1";
     public static  final String PORT =":8088";
     public static final String table_doc = "Document";
+    public static final String table_cle = "Cles";
     public static final String nom_base ="distdocs";
     public static final String table_docs = "DocsAchetes";
     public static final String column_data_achat = "date_achat";
