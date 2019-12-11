@@ -1,6 +1,7 @@
 package com.example.distdocs.activities;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -48,12 +49,16 @@ public class FetchDocsRequest  extends Activity {
     GridView gridView;
     ImageView homeImage ;
     ImageView libraryImage;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         final Context context = this;
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Downloading... Please Wait");
+        progressDialog.show();
         setContentView(R.layout.bibliotek);
         setListeners();
 
@@ -66,6 +71,7 @@ public class FetchDocsRequest  extends Activity {
                 Log.i("docApt",""+docApt);
                 gridView.setAdapter(docApt);
                 docApt.notifyDataSetChanged();
+                progressDialog.dismiss();
             }
         },this);
     }

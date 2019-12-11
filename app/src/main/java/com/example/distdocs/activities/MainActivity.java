@@ -1,5 +1,6 @@
 package com.example.distdocs.activities;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -29,6 +30,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.distdocs.R;
 import com.example.distdocs.accessories.Listeners;
+import com.example.distdocs.accessories.Startup;
 import com.example.distdocs.dao.DocumentDao;
 import com.example.distdocs.accessories.Constante;
 import com.example.distdocs.entities.Document;
@@ -46,13 +48,16 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     //ListView to show the fetched Pdfs from the server
-    GridView gridView;
+    public static GridView gridView;
     //an array to hold the different pdf objects
-    ArrayList<Document> docList= new ArrayList<>();
-    private ProgressDialog progressDialog;
+//    ArrayList<Document> docList= new ArrayList<>();
+    public static ProgressDialog progressDialog;
     Context context;
     ImageView homeImage ;
     ImageView libraryImage;
+    public static View v;
+    public static Activity act;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,26 +69,28 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.topToolbar);
         setSupportActionBar(toolbar);
         setListeners();
+
+        v = findViewById(R.id.accueilGridView);
+        act = MainActivity.this;
+
         Log.i("MainActivity","first");
-
-
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Downloading... Please Wait");
-        progressDialog.show();
-        getDocs(new ResponseCallback() {
-            @Override
-            public void onLoginSuccess(Object result) {
-                progressDialog.dismiss();
-                DocumentAdapter docApt = new DocumentAdapter(MainActivity.this,R.layout.doc_layout,docList);
-                gridView = (GridView) findViewById(R.id.accueilGridView);
-                Log.i("docApt",""+docApt);
-                gridView.setAdapter(docApt);
-                docApt.notifyDataSetChanged();
-            }
-        });
+
+        if(!Startup.isgetDocsCalled){
+            progressDialog.show();
+
+        }else
+            display();
 
     }
-
+    private void display(){
+        DocumentAdapter docApt = new DocumentAdapter(act,R.layout.doc_layout, Startup.docList);
+        gridView = (GridView) v;
+        Log.i("docApt",""+docApt);
+        gridView.setAdapter(docApt);
+        docApt.notifyDataSetChanged();
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -118,72 +125,7 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
     }
-    private void getDocs(final ResponseCallback responseCallback){
-        System.out.println("In doInBackground downloadTask");
-        StringRequest stringRequest = new StringRequest(Request.Method.POST,
-                Constante.PROTOCOLE+Constante.SERVER+Constante.PORT+Constante.app_name+ Constante.getDocs,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            JSONObject obj = new JSONObject(response);
-                            JSONArray jsonArray = obj.getJSONArray("docs");
-                            Log.i("getDocs","jsonArray size "+jsonArray.length());
 
-                            for(int i=0;i<jsonArray.length();i++){
-
-                                //Declaring a json object corresponding to every Document object in our json Array
-                                JSONArray array = jsonArray.getJSONArray(i);
-                                //Declaring a Document object to add it to the ArrayList  listeDocs
-                                Document doc = new Document();
-                                doc.setId(Integer.parseInt(array.get(0).toString()));
-                                doc.setPrix(Float.parseFloat(array.get(1).toString()));
-
-                                String str = array.get(2).toString();
-                                InputStream is = new ByteArrayInputStream(Base64.decode(str,Base64.DEFAULT));
-                                Bitmap bitmap =  BitmapFactory.decodeStream(is);
-                                doc.setImage(bitmap);
-                                doc.setPremiereCouverture(str);
-
-                                docList.add(doc);
-                            }
-
-                            System.out.println("size da "+docList.size());
-                            if (responseCallback != null) {
-                                responseCallback.onLoginSuccess(response);
-                            }
-
-                        } catch (JSONException e) {
-                            Log.e("getDocs JSONException",e.getMessage());
-                            e.printStackTrace();
-                        }catch (Throwable e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                }
-                ,
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e("getDocs ErrorListener","");
-                        error.printStackTrace();
-                    }
-                }
-        ){
-
-            @Override
-            public Request.Priority getPriority() {
-                return Priority.HIGH;
-            }
-        };
-
-        RequestQueue request = Volley.newRequestQueue(this);
-        request.add(stringRequest);
-
-        System.out.println("finally size  "+docList.size());
-
-    }
 
     public void setListeners(){
         homeImage = findViewById(R.id.home);
