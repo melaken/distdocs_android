@@ -10,12 +10,16 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -24,6 +28,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.distdocs.R;
+import com.example.distdocs.accessories.Listeners;
 import com.example.distdocs.dao.DocumentDao;
 import com.example.distdocs.accessories.Constante;
 import com.example.distdocs.entities.Document;
@@ -45,41 +50,26 @@ public class MainActivity extends AppCompatActivity {
     //an array to hold the different pdf objects
     ArrayList<Document> docList= new ArrayList<>();
     private ProgressDialog progressDialog;
-//    public static DocumentDao docDao;
+    Context context;
+    ImageView homeImage ;
+    ImageView libraryImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        context = this;
+
+        Log.i("MainActivity","zero");
+        setContentView(R.layout.activity_main);
+        Toolbar toolbar = findViewById(R.id.topToolbar);
+        setSupportActionBar(toolbar);
+        setListeners();
+        Log.i("MainActivity","first");
+
+
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Downloading... Please Wait");
         progressDialog.show();
-        Log.i("MainActivity","zero");
-        setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        final Context context = this;
-        Log.i("MainActivity","first");
-        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                Intent intent = new Intent();
-                switch (item.getItemId()) {
-                    case R.id.home_icon:
-                        intent.setClass(context, MainActivity.class);
-                        startActivity(intent);
-                        break;
-                    case R.id.shopping_cart:
-
-                        intent.setClass(context, FetchDocsRequest.class);
-                        startActivity(intent);
-                        break;
-                }
-                    return true;
-                }
-
-        });
-        Log.i("MainActivity","2nd");
         getDocs(new ResponseCallback() {
             @Override
             public void onLoginSuccess(Object result) {
@@ -192,6 +182,18 @@ public class MainActivity extends AppCompatActivity {
         request.add(stringRequest);
 
         System.out.println("finally size  "+docList.size());
+
+    }
+
+    public void setListeners(){
+        homeImage = findViewById(R.id.home);
+        libraryImage = findViewById(R.id.library);
+        homeImage.setOnClickListener(new Listeners(this));
+        libraryImage.setOnClickListener(new Listeners(this));
+
+        TextView homeTitle = findViewById(R.id.home_tittle);
+        homeImage.setColorFilter(ContextCompat.getColor(context, R.color.colorTextbottomTool));
+        homeTitle.setTextColor(ContextCompat.getColor(context, R.color.colorTextbottomTool));
 
     }
 }

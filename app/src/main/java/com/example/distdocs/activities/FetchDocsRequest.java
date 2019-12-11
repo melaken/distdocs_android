@@ -8,8 +8,11 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -20,11 +23,11 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.distdocs.R;
 import com.example.distdocs.accessories.BiblioAdapter;
+import com.example.distdocs.accessories.Listeners;
 import com.example.distdocs.dao.DocumentDao;
 import com.example.distdocs.accessories.Constante;
 import com.example.distdocs.entities.DocsAchetes;
 import com.example.distdocs.accessories.ResponseCallback;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,6 +46,8 @@ public class FetchDocsRequest  extends Activity {
     List<DocsAchetes> da= new ArrayList<>();
     DocumentDao docDao = new DocumentDao(this);
     GridView gridView;
+    ImageView homeImage ;
+    ImageView libraryImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +55,7 @@ public class FetchDocsRequest  extends Activity {
 
         final Context context = this;
         setContentView(R.layout.bibliotek);
+        setListeners();
 
         getNewBoughtDocs(new ResponseCallback() {
             @Override
@@ -62,27 +68,6 @@ public class FetchDocsRequest  extends Activity {
                 docApt.notifyDataSetChanged();
             }
         },this);
-
-        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation_bib);
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                Intent intent = new Intent();
-                switch (item.getItemId()) {
-                    case R.id.home_icon:
-                        intent.setClass(context, MainActivity.class);
-                        startActivity(intent);
-                        break;
-                    case R.id.shopping_cart:
-                        intent.setClass(context, FetchDocsRequest.class);
-                        startActivity(intent);
-                        break;
-                }
-                return true;
-            }
-
-        });
-
     }
     public void getNewBoughtDocs(final ResponseCallback responseCallback, Context context){
         final String lastDate =  docDao.lastInsertDatetime();
@@ -160,4 +145,15 @@ public class FetchDocsRequest  extends Activity {
 
     }
 
+    private void setListeners(){
+        homeImage = findViewById(R.id.home);
+        libraryImage = findViewById(R.id.library);
+        homeImage.setOnClickListener(new Listeners(this));
+        libraryImage.setOnClickListener(new Listeners(this));
+
+        TextView libraryTitle =findViewById(R.id.library_tittle);
+        libraryImage.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.colorTextbottomTool));
+        libraryTitle.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorTextbottomTool));
+
+    }
 }

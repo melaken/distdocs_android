@@ -62,7 +62,7 @@ public class DocumentAdapter extends ArrayAdapter<Document> {
             holder.prix.setText(doc.getPrix()+"  FCFA");
 //        }
         if(bm == null){
-            bm = BitmapFactory.decodeResource(activity.getResources(), R.mipmap.text);
+            bm = BitmapFactory.decodeResource(activity.getResources(), R.drawable.library_books);
 //            holder.prix.setText(null);
         }
 

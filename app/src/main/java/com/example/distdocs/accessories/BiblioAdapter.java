@@ -55,7 +55,7 @@ public class BiblioAdapter extends ArrayAdapter<DocsAchetes> {
         Bitmap bm = doc.getBitmapCover();
         Log.i("Image Display"," after call getImage "+bm+" "+doc.getDocId());
         if(bm == null){
-            bm = BitmapFactory.decodeResource(activity.getResources(), R.mipmap.text);
+            bm = BitmapFactory.decodeResource(activity.getResources(), R.drawable.library_books);
         }
 
         holder.image.setImageBitmap(bm);
