@@ -3,4 +3,7 @@
     <string name="action_settings">Settings</string>
     <string name="Open">Open</string>
     <string name="Close">Close</string>
+    <string name="reload">Actualiser</string>
+    <string name="slogan">La plateforme d\'accès au documents numériques</string>
+    <string name="noInternet">Pas de connexion Internet.</string>
 </resources>

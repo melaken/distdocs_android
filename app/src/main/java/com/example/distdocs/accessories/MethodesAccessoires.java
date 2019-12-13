@@ -1,6 +1,8 @@
 package com.example.distdocs.accessories;
 
+import android.app.Activity;
 import android.content.Context;
+import android.net.ConnectivityManager;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 
@@ -11,7 +13,13 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class MethodesAccessoires {
+public class MethodesAccessoires extends Activity {
+
+    public static boolean isNetworkConnected(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected();
+    }
     InputStream getByteValues(File file){
         InputStream stream = null;
         try {

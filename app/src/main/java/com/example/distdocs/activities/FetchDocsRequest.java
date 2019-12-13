@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -25,6 +26,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.distdocs.R;
 import com.example.distdocs.accessories.BiblioAdapter;
 import com.example.distdocs.accessories.Listeners;
+import com.example.distdocs.accessories.MethodesAccessoires;
 import com.example.distdocs.dao.DocumentDao;
 import com.example.distdocs.accessories.Constante;
 import com.example.distdocs.entities.DocsAchetes;
@@ -56,24 +58,45 @@ public class FetchDocsRequest  extends Activity {
         super.onCreate(savedInstanceState);
 
         final Context context = this;
+
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Downloading... Please Wait");
         progressDialog.show();
         setContentView(R.layout.bibliotek);
         setListeners();
 
-        getNewBoughtDocs(new ResponseCallback() {
-            @Override
-            public void onLoginSuccess(Object result) {
-                da= docDao.listAllDocs();
-                BiblioAdapter docApt = new BiblioAdapter(FetchDocsRequest.this,R.layout.bibliotek_item,da,context);
-                gridView = (GridView) findViewById(R.id.biblioGridView);
-                Log.i("docApt",""+docApt);
-                gridView.setAdapter(docApt);
-                docApt.notifyDataSetChanged();
-                progressDialog.dismiss();
-            }
-        },this);
+        if(!MethodesAccessoires.isNetworkConnected(getApplicationContext())){
+            fillGridView(context);
+//            try {
+//                Thread.sleep(10000);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//            if(!MethodesAccessoires.isNetworkConnected(getApplicationContext())){
+//                noInternet = findViewById(R.id.textViewNoIternet);
+//                gridView = (GridView) findViewById(R.id.biblioGridView);
+//                gridView.setVisibility(View.INVISIBLE);
+//                noInternet.setVisibility(View.VISIBLE);
+//                progressDialog.dismiss();
+//                fillGridView(context);
+
+//            }else{
+//                getNewBoughtDocs(new ResponseCallback() {
+//                    @Override
+//                    public void onLoginSuccess(Object result) {
+//                        fillGridView(context);
+//                    }
+//                },this);
+//            }
+
+        }else{
+            getNewBoughtDocs(new ResponseCallback() {
+                @Override
+                public void onLoginSuccess(Object result) {
+                    fillGridView(context);
+                }
+            },this);
+        }
     }
     public void getNewBoughtDocs(final ResponseCallback responseCallback, Context context){
         final String lastDate =  docDao.lastInsertDatetime();
@@ -161,5 +184,16 @@ public class FetchDocsRequest  extends Activity {
         libraryImage.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.colorTextbottomTool));
         libraryTitle.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorTextbottomTool));
 
+    }
+
+    private void fillGridView(Context context){
+        da= docDao.listAllDocs();
+        BiblioAdapter docApt = new BiblioAdapter(FetchDocsRequest.this,R.layout.bibliotek_item,da,context);
+
+        Log.i("docApt",""+docApt);
+        gridView = (GridView) findViewById(R.id.biblioGridView);
+        gridView.setAdapter(docApt);
+        docApt.notifyDataSetChanged();
+        progressDialog.dismiss();
     }
 }

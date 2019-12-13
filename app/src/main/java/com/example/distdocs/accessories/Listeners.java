@@ -38,9 +38,9 @@ public class Listeners implements View.OnClickListener {
                                 intent.setClass(activity.getApplicationContext(), FetchDocsRequest.class);
                                 activity.startActivity(intent);
                                 break;
-            case R.id.shopping_cart:     intent.setClass(activity.getApplicationContext(), NavigationActivity.class);
-                                        activity.startActivity(intent);
-                                        break;
+//            case R.id.shopping_cart:     intent.setClass(activity.getApplicationContext(), NavigationActivity.class);
+//                                        activity.startActivity(intent);
+//                                        break;
         }
     }
 }

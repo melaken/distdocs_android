@@ -38,6 +38,9 @@
         <activity android:name=".activities.NavigationActivity">
 
         </activity>
+        <activity android:name=".accessories.MethodesAccessoires">
+
+        </activity>
     </application>
 
 </manifest>

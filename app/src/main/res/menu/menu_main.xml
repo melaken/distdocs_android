@@ -2,14 +2,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.example.distdocs.distdocs.activities.MainActivity">
-    <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
+<!--    <item-->
+<!--        android:id="@+id/action_settings"-->
+<!--        android:orderInCategory="100"-->
+<!--        android:title="@string/action_settings"-->
+<!--        app:showAsAction="never" />-->
 
-    <item android:id="@+id/menu_check"
-        android:title="check" />
-    <item android:id="@+id/open"
-        android:title="open" />
+<!--    <item android:id="@+id/menu_check"-->
+<!--        android:title="check" />-->
+<!--    <item android:id="@+id/open"-->
+<!--        android:title="open" />-->
+    <item android:id="@+id/reload"
+        android:icon="@drawable/refresh"
+        android:title="@string/reload" />
 </menu>

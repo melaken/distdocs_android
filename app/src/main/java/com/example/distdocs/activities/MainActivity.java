@@ -1,6 +1,7 @@
 package com.example.distdocs.activities;
 
 import android.app.Activity;
+import android.app.Application;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -96,16 +97,14 @@ public class MainActivity extends AppCompatActivity {
         }else {
             try {
                 switch (item.getItemId()) {
-                    case R.id.menu_check:
+                    case R.id.reload:
                         intent = new Intent();
-                        intent.setClass(this, FetchDocsRequest.class);
+                        intent.setClass(this, MainActivity.class);
+//                        Startup.isgetDocsCalled = false;
                         startActivity(intent);
+                        new Startup().onCreate();
                         return true;
-                    case R.id.open:
-                        intent = new Intent();
-                        intent.setClass(this, DocumentActivity.class);
-                        startActivity(intent);
-                        return true;
+
                     default:
                         return super.onOptionsItemSelected(item);
                 }
@@ -127,8 +126,8 @@ public class MainActivity extends AppCompatActivity {
         homeImage.setColorFilter(ContextCompat.getColor(context, R.color.colorTextbottomTool));
         homeTitle.setTextColor(ContextCompat.getColor(context, R.color.colorTextbottomTool));
 
-        shoppingImage = findViewById(R.id.shopping_cart);
-        shoppingImage.setOnClickListener(new Listeners(this));
+//        shoppingImage = findViewById(R.id.shopping_cart);
+//        shoppingImage.setOnClickListener(new Listeners(this));
 
     }
     private void setNavigationView(){
@@ -138,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
 
         dl.addDrawerListener(t);
 
-//        t.setDrawerIndicatorEnabled(true);
+        t.setDrawerIndicatorEnabled(true);
         t.syncState();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
