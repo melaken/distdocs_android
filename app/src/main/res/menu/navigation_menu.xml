@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/myhome"
+        android:icon="@drawable/home"
+        android:title="En kiosque"/>
+    <item android:id="@+id/account"
+        android:icon="@drawable/account_circle"
+        android:title="Mon compte"/>
+    <item android:id="@+id/mydocs"
+        android:icon="@drawable/library_books"
+        android:title="Mes documents"/>
+    <item android:id="@+id/mail"
+        android:icon="@drawable/mail"
+        android:title="Contactez-nous"/>
+
+</menu>

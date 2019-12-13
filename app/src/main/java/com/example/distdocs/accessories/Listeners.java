@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat;
 import com.example.distdocs.R;
 import com.example.distdocs.activities.FetchDocsRequest;
 import com.example.distdocs.activities.MainActivity;
+import com.example.distdocs.activities.NavigationActivity;
 
 public class Listeners implements View.OnClickListener {
    Activity activity;
@@ -37,6 +38,9 @@ public class Listeners implements View.OnClickListener {
                                 intent.setClass(activity.getApplicationContext(), FetchDocsRequest.class);
                                 activity.startActivity(intent);
                                 break;
+            case R.id.shopping_cart:     intent.setClass(activity.getApplicationContext(), NavigationActivity.class);
+                                        activity.startActivity(intent);
+                                        break;
         }
     }
 }

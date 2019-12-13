@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,45 +19,32 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.distdocs.R;
 import com.example.distdocs.accessories.Listeners;
 import com.example.distdocs.accessories.Startup;
-import com.example.distdocs.dao.DocumentDao;
-import com.example.distdocs.accessories.Constante;
-import com.example.distdocs.entities.Document;
 import com.example.distdocs.accessories.DocumentAdapter;
-import com.example.distdocs.accessories.ResponseCallback;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.util.ArrayList;
+import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity {
     //ListView to show the fetched Pdfs from the server
     public static GridView gridView;
-    //an array to hold the different pdf objects
-//    ArrayList<Document> docList= new ArrayList<>();
     public static ProgressDialog progressDialog;
     Context context;
     ImageView homeImage ;
     ImageView libraryImage;
+    ImageView shoppingImage;
     public static View v;
     public static Activity act;
+    private DrawerLayout dl;
+    private ActionBarDrawerToggle t;
+    private NavigationView nav;
 
 
     @Override
@@ -70,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         setListeners();
 
+        setNavigationView();
         v = findViewById(R.id.accueilGridView);
         act = MainActivity.this;
 
@@ -102,32 +91,33 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Intent intent = new Intent();
-        try{
-            switch (item.getItemId())
-            {
-                case R.id.menu_check:
-                    intent = new Intent();
-                    intent.setClass(this, FetchDocsRequest.class);
-                    startActivity(intent);
-                    return true;
-                case R.id.open:
-                    intent = new Intent();
-                    intent.setClass(this, DocumentActivity.class);
-                    startActivity(intent);
-                    return true;
-
-                default:
-                    return super.onOptionsItemSelected(item);
+        if (t.onOptionsItemSelected(item)) {
+            return true;
+        }else {
+            try {
+                switch (item.getItemId()) {
+                    case R.id.menu_check:
+                        intent = new Intent();
+                        intent.setClass(this, FetchDocsRequest.class);
+                        startActivity(intent);
+                        return true;
+                    case R.id.open:
+                        intent = new Intent();
+                        intent.setClass(this, DocumentActivity.class);
+                        startActivity(intent);
+                        return true;
+                    default:
+                        return super.onOptionsItemSelected(item);
+                }
+            } catch (Exception e) {
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+                return false;
             }
-        }catch (Exception e){
-            Toast.makeText(this,e.getMessage(),Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
-            return false;
         }
     }
 
-
-    public void setListeners(){
+    private void setListeners(){
         homeImage = findViewById(R.id.home);
         libraryImage = findViewById(R.id.library);
         homeImage.setOnClickListener(new Listeners(this));
@@ -136,6 +126,54 @@ public class MainActivity extends AppCompatActivity {
         TextView homeTitle = findViewById(R.id.home_tittle);
         homeImage.setColorFilter(ContextCompat.getColor(context, R.color.colorTextbottomTool));
         homeTitle.setTextColor(ContextCompat.getColor(context, R.color.colorTextbottomTool));
+
+        shoppingImage = findViewById(R.id.shopping_cart);
+        shoppingImage.setOnClickListener(new Listeners(this));
+
+    }
+    private void setNavigationView(){
+
+        dl = (DrawerLayout)findViewById(R.id.main_drawer);
+        t = new ActionBarDrawerToggle(this, dl,R.string.Open, R.string.Close) ;
+
+        dl.addDrawerListener(t);
+
+//        t.setDrawerIndicatorEnabled(true);
+        t.syncState();
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+
+
+        nav = (NavigationView)findViewById(R.id.nav);
+        nav.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Intent intent = new Intent();
+                int id = item.getItemId();
+                switch(id)
+                {
+                    case R.id.account:
+                        Toast.makeText(MainActivity.this, "My Account",Toast.LENGTH_SHORT).show();
+                        break;
+                    case R.id.mydocs:
+                        intent.setClass(context, FetchDocsRequest.class);
+                        startActivity(intent);
+                        break;
+                    case R.id.myhome:
+                        intent.setClass(context, MainActivity.class);
+                        startActivity(intent);
+                        break;
+
+                    default:
+                        return true;
+                }
+
+
+                return true;
+
+            }
+        });
 
     }
 }

@@ -35,6 +35,9 @@
         <activity android:name=".activities.DocumentActivity">
 
         </activity>
+        <activity android:name=".activities.NavigationActivity">
+
+        </activity>
     </application>
 
 </manifest>
