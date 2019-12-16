@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -27,6 +28,7 @@ import com.example.distdocs.R;
 import com.example.distdocs.accessories.BiblioAdapter;
 import com.example.distdocs.accessories.Listeners;
 import com.example.distdocs.accessories.MethodesAccessoires;
+import com.example.distdocs.accessories.Startup;
 import com.example.distdocs.dao.DocumentDao;
 import com.example.distdocs.accessories.Constante;
 import com.example.distdocs.entities.DocsAchetes;
@@ -65,38 +67,16 @@ public class FetchDocsRequest  extends Activity {
         setContentView(R.layout.bibliotek);
         setListeners();
 
-        if(!MethodesAccessoires.isNetworkConnected(getApplicationContext())){
-            fillGridView(context);
-//            try {
-//                Thread.sleep(10000);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//            if(!MethodesAccessoires.isNetworkConnected(getApplicationContext())){
-//                noInternet = findViewById(R.id.textViewNoIternet);
-//                gridView = (GridView) findViewById(R.id.biblioGridView);
-//                gridView.setVisibility(View.INVISIBLE);
-//                noInternet.setVisibility(View.VISIBLE);
-//                progressDialog.dismiss();
-//                fillGridView(context);
-
-//            }else{
-//                getNewBoughtDocs(new ResponseCallback() {
-//                    @Override
-//                    public void onLoginSuccess(Object result) {
-//                        fillGridView(context);
-//                    }
-//                },this);
-//            }
-
-        }else{
-            getNewBoughtDocs(new ResponseCallback() {
-                @Override
-                public void onLoginSuccess(Object result) {
-                    fillGridView(context);
-                }
-            },this);
-        }
+        getNewBoughtDocs(new ResponseCallback() {
+            @Override
+            public void onLoginSuccess(Object result) {
+                fillGridView(context);
+            }
+            @Override
+            public void onLoginError(Object result){
+                fillGridView(context);
+            }
+        },this);
     }
     public void getNewBoughtDocs(final ResponseCallback responseCallback, Context context){
         final String lastDate =  docDao.lastInsertDatetime();
@@ -149,6 +129,9 @@ public class FetchDocsRequest  extends Activity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        if (responseCallback != null) {
+                            responseCallback.onLoginError(error);
+                        }
                         System.out.println("ErrorListener");
                         error.printStackTrace();
                     }
@@ -167,7 +150,11 @@ public class FetchDocsRequest  extends Activity {
                 return Priority.HIGH;
             }
         };
-
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(
+                Constante.requestTimeout,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
+        );
 
         RequestQueue request = Volley.newRequestQueue(context);
         request.add(stringRequest);

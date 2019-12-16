@@ -21,4 +21,5 @@ public class Constante {
     public static  final String BOOKS =DIRECTORY+"/books";
     public static  final String COVER =DIRECTORY+"/cover_page";
     public static  final String sendDocStream= "/sendDocStream";
+    public static  final  int  requestTimeout = 60000000;
 }

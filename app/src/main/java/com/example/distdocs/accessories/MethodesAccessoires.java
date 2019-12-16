@@ -3,8 +3,6 @@ package com.example.distdocs.accessories;
 import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -12,8 +10,24 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class MethodesAccessoires extends Activity {
+
+    public static boolean isServerReachabable(URL url) {
+        int code = 0;
+        HttpURLConnection connection = null;
+        try {
+            connection = (HttpURLConnection) url.openConnection();
+            code = connection.getResponseCode();
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+
+
+        return code == 200;
+    }
 
     public static boolean isNetworkConnected(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -34,6 +48,7 @@ public class MethodesAccessoires extends Activity {
 
         return stream;
     }
+
 
     /**
      * Read the file and returns the byte array

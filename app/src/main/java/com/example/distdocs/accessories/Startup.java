@@ -3,13 +3,16 @@ package com.example.distdocs.accessories;
 import android.app.Activity;
 import android.app.Application;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.GridView;
+import android.widget.TextView;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -17,7 +20,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.distdocs.R;
-import com.example.distdocs.activities.MainActivity;
 import com.example.distdocs.entities.Document;
 
 import org.json.JSONArray;
@@ -26,34 +28,29 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 
 public class Startup extends Application {
     public static ArrayList<Document> docList= new ArrayList<>();
     public static boolean isgetDocsCalled = false;
+  private ProgressDialog progressDialog;
+  public static URL url;
 
     @Override
     public void onCreate(){
         super.onCreate();
-
-        getDocs(new ResponseCallback() {
-            @Override
-            public void onLoginSuccess(Object result) {
-                MainActivity.progressDialog.dismiss();
-                display(MainActivity.gridView,MainActivity.v,MainActivity.act);
-                isgetDocsCalled = true;
-            }
-        });
+        try {
+            String chaine = Constante.PROTOCOLE+Constante.SERVER+Constante.PORT+Constante.app_name;
+            Log.i("chaine",chaine);
+            url = new URL(chaine);
+        } catch (MalformedURLException e) {
+            Log.e("Startup","url create "+e.getMessage());
+            e.printStackTrace();
+        }
     }
-    public static void display(GridView gridView, View v, Activity act){
-        DocumentAdapter docApt = new DocumentAdapter(act,R.layout.doc_layout, Startup.docList);
-        gridView = (GridView) v;
-        Log.i("docApt",""+docApt);
-        gridView.setAdapter(docApt);
-        docApt.notifyDataSetChanged();
-    }
-
-    private void getDocs(final ResponseCallback responseCallback){
+    public static void getDocs(final ResponseCallback responseCallback, Context context){
         System.out.println("In doInBackground downloadTask");
         StringRequest stringRequest = new StringRequest(Request.Method.POST,
                 Constante.PROTOCOLE+Constante.SERVER+Constante.PORT+Constante.app_name+ Constante.getDocs,
@@ -92,6 +89,7 @@ public class Startup extends Application {
                             Log.e("getDocs JSONException",e.getMessage());
                             e.printStackTrace();
                         }catch (Throwable e) {
+                            Log.e("getDocs ErrorListener 0",""+e.getMessage());
                             e.printStackTrace();
                         }
 
@@ -101,7 +99,10 @@ public class Startup extends Application {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e("getDocs ErrorListener","");
+                        if (responseCallback != null) {
+                            responseCallback.onLoginError(error);
+                        }
+                        Log.e("getDocs ErrorListener",""+error.getMessage());
                         error.printStackTrace();
                     }
                 }
@@ -113,7 +114,14 @@ public class Startup extends Application {
             }
         };
 
-        RequestQueue request = Volley.newRequestQueue(this);
+        RequestQueue request = Volley.newRequestQueue(context);
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(
+                Constante.requestTimeout,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
+        );
+
+
         request.add(stringRequest);
 
         System.out.println("finally size  "+docList.size());

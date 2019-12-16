@@ -10,7 +10,7 @@ public class DataBaseHandler extends SQLiteOpenHelper {
     String query_user = "create table Utilisateur(id INTEGER PRIMARY KEY,email TEXT UNIQUE,mot_de_passe TEXT NOT NULL, nom TEXT NOT NULL, prenom TEXT)";
     String query = "create table DocsAchetes(doc_id INTEGER PRIMARY KEY,premiere_couverture TEXT not null ," +
             "last_update datetime NOT NULL) ";
-    String query_key = "create table "+ Constante.table_cle+"(cle TEXT PRIMARY KEY)";
+    String query_key = "create table "+ Constante.table_cle+"(doc_id INTEGER PRIMARY KEY,cle TEXT)";
 
 
     public DataBaseHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {

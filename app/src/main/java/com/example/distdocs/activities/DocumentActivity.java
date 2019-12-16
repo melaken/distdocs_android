@@ -7,6 +7,7 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Message;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -74,6 +76,10 @@ public class DocumentActivity extends AppCompatActivity {
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
+
+                }
+                public void onLoginError(Object result){
+                    progressDialog.dismiss();
 
                 }
             },this,fileName);
@@ -163,7 +169,11 @@ public class DocumentActivity extends AppCompatActivity {
                 return Request.Priority.HIGH;
             }
         };
-
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(
+                Constante.requestTimeout,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT)
+        );
 
         RequestQueue request = Volley.newRequestQueue(context);
         request.add(stringRequest);

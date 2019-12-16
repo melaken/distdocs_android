@@ -7,7 +7,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
@@ -27,26 +30,31 @@ import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+
 import com.example.distdocs.R;
 import com.example.distdocs.accessories.Listeners;
+import com.example.distdocs.accessories.MethodesAccessoires;
+import com.example.distdocs.accessories.ResponseCallback;
 import com.example.distdocs.accessories.Startup;
 import com.example.distdocs.accessories.DocumentAdapter;
 import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity {
     //ListView to show the fetched Pdfs from the server
-    public static GridView gridView;
-    public static ProgressDialog progressDialog;
+    private GridView gridView;
+    private ProgressDialog progressDialog;
+    private TextView noInternet;
+    private View v;
+
+
     Context context;
     ImageView homeImage ;
     ImageView libraryImage;
     ImageView shoppingImage;
-    public static View v;
-    public static Activity act;
+
     private DrawerLayout dl;
     private ActionBarDrawerToggle t;
     private NavigationView nav;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,8 +68,8 @@ public class MainActivity extends AppCompatActivity {
         setListeners();
 
         setNavigationView();
-        v = findViewById(R.id.accueilGridView);
-        act = MainActivity.this;
+        gridView = findViewById(R.id.accueilGridView);
+
 
         Log.i("MainActivity","first");
         progressDialog = new ProgressDialog(this);
@@ -69,17 +77,33 @@ public class MainActivity extends AppCompatActivity {
 
         if(!Startup.isgetDocsCalled){
             progressDialog.show();
-
+            Startup.getDocs(new ResponseCallback() {
+                @Override
+                public void onLoginError(Object results){
+                    progressDialog.dismiss();
+                    displayNoConnectionTOServer();
+                }
+                @Override
+                public void onLoginSuccess(Object result) {
+                    progressDialog.dismiss();
+                        displayDocs();
+                        Startup.isgetDocsCalled = true;
+                }
+            },context);
         }else
-            display();
+            displayDocs();
 
     }
-    private void display(){
-        DocumentAdapter docApt = new DocumentAdapter(act,R.layout.doc_layout, Startup.docList);
-        gridView = (GridView) v;
+    private void displayDocs(){
+        DocumentAdapter docApt = new DocumentAdapter(MainActivity.this,R.layout.doc_layout, Startup.docList);
         Log.i("docApt",""+docApt);
         gridView.setAdapter(docApt);
         docApt.notifyDataSetChanged();
+    }
+    private void displayNoConnectionTOServer(){
+        noInternet = findViewById(R.id.textViewNoIternet);
+        gridView.setVisibility(View.INVISIBLE);
+        noInternet.setVisibility(View.VISIBLE);
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -100,9 +124,9 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.reload:
                         intent = new Intent();
                         intent.setClass(this, MainActivity.class);
-//                        Startup.isgetDocsCalled = false;
+                        Startup.isgetDocsCalled = false;
                         startActivity(intent);
-                        new Startup().onCreate();
+//                        new Startup().onCreate();
                         return true;
 
                     default:
@@ -175,4 +199,5 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
 }

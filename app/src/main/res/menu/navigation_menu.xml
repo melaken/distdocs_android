@@ -4,14 +4,24 @@
     <item android:id="@+id/myhome"
         android:icon="@drawable/home"
         android:title="En kiosque"/>
+    <item android:id="@+id/AllSubscriptions"
+        android:icon="@drawable/subscriptions"
+        android:title="Nos abonnements"/>
+
     <item android:id="@+id/account"
         android:icon="@drawable/account_circle"
         android:title="Mon compte"/>
     <item android:id="@+id/mydocs"
         android:icon="@drawable/library_books"
         android:title="Mes documents"/>
+
+<!--    <ListView>-->
     <item android:id="@+id/mail"
         android:icon="@drawable/mail"
         android:title="Contactez-nous"/>
+    <item android:id="@+id/info"
+        android:icon="@drawable/iinfo"
+        android:title="Politique de confidentialité"/>
+<!--    </ListView>-->
 
 </menu>
