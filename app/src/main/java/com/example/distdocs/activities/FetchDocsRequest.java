@@ -54,6 +54,7 @@ public class FetchDocsRequest  extends Activity {
     ImageView homeImage ;
     ImageView libraryImage;
     private ProgressDialog progressDialog;
+    private TextView textViewNoDocInLibrary;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -175,12 +176,16 @@ public class FetchDocsRequest  extends Activity {
 
     private void fillGridView(Context context){
         da= docDao.listAllDocs();
-        BiblioAdapter docApt = new BiblioAdapter(FetchDocsRequest.this,R.layout.bibliotek_item,da,context);
-
-        Log.i("docApt",""+docApt);
         gridView = (GridView) findViewById(R.id.biblioGridView);
-        gridView.setAdapter(docApt);
-        docApt.notifyDataSetChanged();
+        if(da.size() > 0) {
+            BiblioAdapter docApt = new BiblioAdapter(FetchDocsRequest.this, R.layout.bibliotek_item, da, context);
+            gridView.setAdapter(docApt);
+            docApt.notifyDataSetChanged();
+        }else{
+            textViewNoDocInLibrary = findViewById(R.id.textViewNoDocInLibrary);
+            gridView.setVisibility(View.GONE);
+            textViewNoDocInLibrary.setVisibility(View.VISIBLE);
+        }
         progressDialog.dismiss();
     }
 }

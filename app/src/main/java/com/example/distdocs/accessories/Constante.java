@@ -4,8 +4,8 @@ public class Constante {
 //    public static  final String SERVER = "http://myracenter.homeip.net";
 //public static  final String DIRECTORY = "/home/myra";
     public static  final String PROTOCOLE = "http://";
-    public static  final String SERVER = "192.168.1.124";
-//    public static  final String SERVER = "10.42.0.1";
+//    public static  final String SERVER = "192.168.1.124";
+    public static  final String SERVER = "10.42.0.1";
     public static  final String PORT =":8088";
     public static final String table_doc = "Document";
     public static final String table_cle = "Cles";
@@ -16,10 +16,15 @@ public class Constante {
     public static final String email = "kam@yahoo.fr";
     public static final String newBoughtDocs ="/send";
     public static final String getDocs = "/getAllDocs";
+    public static final String createAccount = "/createAccount";
+    public static final String login = "/createAccount";
     public static final String app_name = "/distdocs";
     public static  final String DIRECTORY = "/distdocs";
     public static  final String BOOKS =DIRECTORY+"/books";
     public static  final String COVER =DIRECTORY+"/cover_page";
     public static  final String sendDocStream= "/sendDocStream";
     public static  final  int  requestTimeout = 60000000;
+
+    public static final String EMAIL_NOT_VALID = "Email non-valide";
+    public static final String PASS_NOT_VALID = "Entre 3 et 10 caractères alphanumeriques";
 }

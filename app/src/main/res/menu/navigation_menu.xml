@@ -7,7 +7,6 @@
     <item android:id="@+id/AllSubscriptions"
         android:icon="@drawable/subscriptions"
         android:title="Nos abonnements"/>
-
     <item android:id="@+id/account"
         android:icon="@drawable/account_circle"
         android:title="Mon compte"/>

@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     private ActionBarDrawerToggle t;
     private NavigationView nav;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
     }
     private void displayNoConnectionTOServer(){
         noInternet = findViewById(R.id.textViewNoIternet);
-        gridView.setVisibility(View.INVISIBLE);
+        gridView.setVisibility(View.GONE);
         noInternet.setVisibility(View.VISIBLE);
     }
     @Override
@@ -122,13 +123,16 @@ public class MainActivity extends AppCompatActivity {
             try {
                 switch (item.getItemId()) {
                     case R.id.reload:
-                        intent = new Intent();
                         intent.setClass(this, MainActivity.class);
                         Startup.isgetDocsCalled = false;
                         startActivity(intent);
-//                        new Startup().onCreate();
                         return true;
-
+                    case R.id.signup: intent.setClass(this, SignupActivity.class);
+                        startActivity(intent);
+                        return true;
+                    case R.id.login: intent.setClass(this, LoginActivity.class);
+                        startActivity(intent);
+                        return true;
                     default:
                         return super.onOptionsItemSelected(item);
                 }

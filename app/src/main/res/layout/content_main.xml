@@ -12,19 +12,19 @@
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_margin="5dp">
+        android:orientation="vertical">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:textSize="14dp"
+            android:layout_marginTop="80dp"
+            android:textSize="15dp"
             android:textStyle="bold"
             android:textColor="@color/colorRed"
             android:text="@string/noInternet"
             android:id="@+id/textViewNoIternet"
-            android:visibility="invisible"/>
+            android:visibility="gone"/>
 
         <GridView
             android:id="@+id/accueilGridView"

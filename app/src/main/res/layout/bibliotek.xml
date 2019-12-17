@@ -8,12 +8,23 @@
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp">
+        android:layout_marginTop="60dp">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="80dp"
+            android:textSize="15dp"
+            android:textStyle="bold"
+            android:textColor="@color/colorRed"
+            android:text="@string/noDocInLibrary"
+            android:id="@+id/textViewNoDocInLibrary"
+            android:visibility="gone"/>
         <GridView
             android:id="@+id/biblioGridView"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:numColumns="2"
             android:verticalSpacing="50dp"/>
 

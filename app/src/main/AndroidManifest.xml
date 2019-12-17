@@ -41,6 +41,12 @@
         <activity android:name=".accessories.MethodesAccessoires">
 
         </activity>
+        <activity android:name=".activities.SignupActivity">
+
+        </activity>
+        <activity android:name=".activities.LoginActivity">
+
+        </activity>
     </application>
 
 </manifest>
