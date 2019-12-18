@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.example.distdocs.accessories.Constante;
 
 public class DataBaseHandler extends SQLiteOpenHelper {
-    String query_user = "create table Utilisateur(id INTEGER PRIMARY KEY,email TEXT UNIQUE,mot_de_passe TEXT NOT NULL, nom TEXT NOT NULL, prenom TEXT)";
+    String query_user = "create table Utilisateur(id INTEGER PRIMARY KEY,email TEXT UNIQUE,mot_de_passe TEXT, nom TEXT NOT NULL, prenom TEXT)";
     String query = "create table DocsAchetes(doc_id INTEGER PRIMARY KEY,premiere_couverture TEXT not null ," +
             "last_update datetime NOT NULL) ";
     String query_key = "create table "+ Constante.table_cle+"(doc_id INTEGER PRIMARY KEY,cle TEXT)";
@@ -27,9 +27,6 @@ public class DataBaseHandler extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
-        if(newVersion == 3)
-            db.execSQL(query_key);
 
     }
 }

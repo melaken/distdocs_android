@@ -3,17 +3,14 @@ package com.example.distdocs.activities;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
 import com.android.volley.AuthFailureError;
@@ -27,12 +24,12 @@ import com.android.volley.toolbox.Volley;
 import com.example.distdocs.R;
 import com.example.distdocs.accessories.BiblioAdapter;
 import com.example.distdocs.accessories.Listeners;
-import com.example.distdocs.accessories.MethodesAccessoires;
 import com.example.distdocs.accessories.Startup;
 import com.example.distdocs.dao.DocumentDao;
 import com.example.distdocs.accessories.Constante;
 import com.example.distdocs.entities.DocsAchetes;
 import com.example.distdocs.accessories.ResponseCallback;
+import com.example.distdocs.entities.Utilisateur;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -57,6 +54,14 @@ public class FetchDocsRequest  extends Activity {
     private TextView textViewNoDocInLibrary;
 
     @Override
+    public void onBackPressed(){
+        ImageView libraryImage = findViewById(R.id.library);
+        TextView libraryTitle = findViewById(R.id.library_tittle);
+        libraryImage.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.colorBlack));
+        libraryTitle.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorBlack));
+
+    }
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -68,18 +73,26 @@ public class FetchDocsRequest  extends Activity {
         setContentView(R.layout.bibliotek);
         setListeners();
 
-        getNewBoughtDocs(new ResponseCallback() {
-            @Override
-            public void onLoginSuccess(Object result) {
-                fillGridView(context);
-            }
-            @Override
-            public void onLoginError(Object result){
-                fillGridView(context);
-            }
-        },this);
+        Utilisateur user = Startup.getUser(this);
+        gridView = (GridView) findViewById(R.id.biblioGridView);
+        if(user !=null) {
+            getNewBoughtDocs(new ResponseCallback() {
+                @Override
+                public void onLoginSuccess(Object result) {
+                    fillGridView(context);
+                }
+
+                @Override
+                public void onLoginError(Object result) {
+                    fillGridView(context);
+                }
+            }, this,user.getEmail());
+        }else{
+            progressDialog.dismiss();
+            noDocInLibrary();
+        }
     }
-    public void getNewBoughtDocs(final ResponseCallback responseCallback, Context context){
+    public void getNewBoughtDocs(final ResponseCallback responseCallback, Context context,String email){
         final String lastDate =  docDao.lastInsertDatetime();
         Log.i("getNewBoughtDocs","lastUpdate "+lastDate);
 
@@ -143,7 +156,7 @@ public class FetchDocsRequest  extends Activity {
                 HashMap<String, String> hashMap = new HashMap<>();
                 if(lastDate != null && !lastDate.isEmpty())
                     hashMap.put("lastDate",lastDate);
-                hashMap.put("email",Constante.email);
+                hashMap.put("email",email);
                 return hashMap;
             }
             @Override
@@ -176,16 +189,19 @@ public class FetchDocsRequest  extends Activity {
 
     private void fillGridView(Context context){
         da= docDao.listAllDocs();
-        gridView = (GridView) findViewById(R.id.biblioGridView);
+
         if(da.size() > 0) {
             BiblioAdapter docApt = new BiblioAdapter(FetchDocsRequest.this, R.layout.bibliotek_item, da, context);
             gridView.setAdapter(docApt);
             docApt.notifyDataSetChanged();
         }else{
-            textViewNoDocInLibrary = findViewById(R.id.textViewNoDocInLibrary);
-            gridView.setVisibility(View.GONE);
-            textViewNoDocInLibrary.setVisibility(View.VISIBLE);
+            noDocInLibrary();
         }
         progressDialog.dismiss();
+    }
+    private void noDocInLibrary(){
+        textViewNoDocInLibrary = findViewById(R.id.textViewNoDocInLibrary);
+        gridView.setVisibility(View.GONE);
+        textViewNoDocInLibrary.setVisibility(View.VISIBLE);
     }
 }

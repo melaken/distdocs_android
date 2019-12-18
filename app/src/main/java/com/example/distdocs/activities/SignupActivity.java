@@ -50,6 +50,8 @@ public class SignupActivity extends AppCompatActivity {
     private String password;
     private String password_conf;
     private Object success;
+    private String emailMessage;
+    private boolean ifError;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -101,12 +103,14 @@ public class SignupActivity extends AppCompatActivity {
                 if(success != null && (boolean)success){
                     onSignupSuccess();
                 }else{
+                    _emailText.setError(emailMessage);
                     onSignupFailed();
                 }
             }
 
             @Override
             public void onLoginError(Object result) {
+                progressDialog.dismiss();
                 onSignupFailed();
             }
         },this);
@@ -168,7 +172,13 @@ public class SignupActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         try {
                             JSONObject obj = new JSONObject(response);
+
                              success = obj.get("success");
+                             if(obj.has("email"))
+                                emailMessage = obj.getString("email");
+                             if(obj.has("error"))
+                                ifError = obj.getBoolean("error");
+
                             if (responseCallback != null) {
                                 responseCallback.onLoginSuccess(response);
                             }

@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Environment;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -20,35 +21,39 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.distdocs.R;
+import com.example.distdocs.dao.UtilisateurDao;
 import com.example.distdocs.entities.Document;
+import com.example.distdocs.entities.Utilisateur;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 
 public class Startup extends Application {
     public static ArrayList<Document> docList= new ArrayList<>();
     public static boolean isgetDocsCalled = false;
   private ProgressDialog progressDialog;
-  public static URL url;
 
     @Override
     public void onCreate(){
         super.onCreate();
-        try {
-            String chaine = Constante.PROTOCOLE+Constante.SERVER+Constante.PORT+Constante.app_name;
-            Log.i("chaine",chaine);
-            url = new URL(chaine);
-        } catch (MalformedURLException e) {
-            Log.e("Startup","url create "+e.getMessage());
-            e.printStackTrace();
+        String books_dir = Environment.getExternalStorageDirectory()+Constante.BOOKS;
+        String cover_dir = Environment.getExternalStorageDirectory()+Constante.COVER;
+
+        File books_file = new File(books_dir);
+        File cover_file = new File(cover_dir);
+        if(!books_file.exists()){
+            books_file.mkdirs();
         }
+        if(!cover_file.exists()){
+            cover_file.mkdirs();
+        }
+
     }
     public static void getDocs(final ResponseCallback responseCallback, Context context){
         System.out.println("In doInBackground downloadTask");
@@ -127,5 +132,9 @@ public class Startup extends Application {
         System.out.println("finally size  "+docList.size());
 
     }
-
+    public static Utilisateur getUser(Context context){
+        UtilisateurDao dao = new UtilisateurDao(context);
+        Utilisateur user = dao.selectUser();
+        return user;
+    }
 }

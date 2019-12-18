@@ -24,12 +24,12 @@ import java.util.List;
 public class DocumentDao {
     DataBaseHandler dbh;
     SQLiteDatabase db;
-    private static final String TAG = "Download Task";
+    private static final String TAG = "DocumentDao";
 
 
     public DocumentDao(Context ctx) {
 
-        dbh = new DataBaseHandler(ctx, Constante.nom_base,null,3);
+        dbh = new DataBaseHandler(ctx, Constante.nom_base,null,1);
         //force dbh to create new table if exists
 //        open();
 //        close();
@@ -49,16 +49,12 @@ public class DocumentDao {
     }
     public void addDocument(DocsAchetes doc){
         ContentValues vals = new ContentValues();
-//        System.out.println("stream_doc "+doc.getDocument().toString());
         vals.put("doc_id",doc.getDocId());
         vals.put("premiere_couverture",doc.getPremiere_couverture());
         vals.put("last_update",doc.getLastUpdate().toString());
-//        vals.put("cover",doc.getCover());
-//        vals.put("document",doc.getDocument());
         try {
             System.out.println("try in addDoc ");
             storeStream(doc.getCover(), Constante.COVER, doc.getPremiere_couverture());
-//            storeStream(doc.getDocument(), Constante.BOOKS, doc.getDocId() + "");
             long res = db.insert(Constante.table_docs, null, vals);
         }catch(Throwable e){
             Log.e("StoreStream","error "+e.getMessage());
@@ -120,8 +116,6 @@ public class DocumentDao {
                 c.moveToLast();
                 doc.setDocId( c.getInt(0));
                 doc.setPremiere_couverture(c.getString(1));
-//                doc.setCover(c.getBlob(2));
-//                doc.setDocument(c.getBlob(3));
 
             }
             c.close();
@@ -169,32 +163,5 @@ public class DocumentDao {
         }
         return bm;
     }
-    public String getKey(){
-        db = dbh.getReadableDatabase();
-        Log.i("Dao getKey","before req");
-        String cle = null;
-        try {
-            Cursor c = db.rawQuery("select cle from Cles",null);
-            if (c.getCount() > 0) {
-                c.moveToFirst();
-                cle = c.getString(0);
-                c.close();
-            }
 
-        }catch (Throwable e){
-            Log.e("Dao getKey","erro "+e.getMessage());
-            e.printStackTrace();
-        }
-            db.close();
-        Log.i("Dao getKey","cle "+cle);
-        return cle;
-    }
-    public void insertKey(String key){
-        ContentValues vals = new ContentValues();
-        vals.put("cle",key);
-        open();
-        db.insert(Constante.table_cle, null, vals);
-
-        close();
-    }
 }

@@ -24,8 +24,11 @@ import com.android.volley.toolbox.Volley;
 import com.example.distdocs.R;
 import com.example.distdocs.accessories.Constante;
 import com.example.distdocs.accessories.ResponseCallback;
+import com.example.distdocs.dao.UtilisateurDao;
+import com.example.distdocs.entities.Utilisateur;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,12 +48,15 @@ public class LoginActivity extends AppCompatActivity {
 
     String email;
     String password;
+    Utilisateur user;
+    Context context;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
         ButterKnife.bind(this);
+        context = this;
 
         _loginButton.setOnClickListener(new View.OnClickListener() {
 
@@ -91,12 +97,12 @@ public class LoginActivity extends AppCompatActivity {
         login(new ResponseCallback() {
             @Override
             public void onLoginSuccess(Object result) {
-
+                onLoginSucceed();
             }
 
             @Override
             public void onLoginError(Object result) {
-
+                onLoginFailed();
             }
         },this);
 
@@ -116,10 +122,14 @@ public class LoginActivity extends AppCompatActivity {
     }
 
 
-    public void onLoginSuccess() {
+    public void onLoginSucceed() {
+        UtilisateurDao dao = new UtilisateurDao(this);
+        dao.storeUser(user);
+        Toast.makeText(this, "Vous êtes conecté(e) ", Toast.LENGTH_SHORT).show();
         _loginButton.setEnabled(true);
         finish();
     }
+
 
     public void onLoginFailed() {
         Toast.makeText(getBaseContext(), "Connexion échouée", Toast.LENGTH_LONG).show();
@@ -148,19 +158,28 @@ public class LoginActivity extends AppCompatActivity {
     }
     private void login(final ResponseCallback responseCallback, Context context){
         StringRequest stringRequest = new StringRequest(Request.Method.POST,
-                Constante.PROTOCOLE+Constante.SERVER+Constante.PORT+Constante.app_name+ Constante.createAccount,
+                Constante.PROTOCOLE+Constante.SERVER+Constante.PORT+Constante.app_name+ Constante.login,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-//                        try {
+                        try {
+                            JSONObject obj = new JSONObject(response);
+
+                            user = new Utilisateur();
+                            user.setId(obj.getLong("id"));
+                            user.setEmail(obj.getString("email"));
+                            if(obj.has("prenom"))
+                                user.setPrenom(obj.getString("prenom"));
+                            user.setNom(obj.getString("nom"));
+
                             if (responseCallback != null) {
                                 responseCallback.onLoginSuccess(response);
                             }
 
-//                        } catch (JSONException e) {
-//                            System.out.println("JSONException");
-//                            e.printStackTrace();
-//                        }
+                        } catch (JSONException e) {
+                            System.out.println("JSONException");
+                            e.printStackTrace();
+                        }
 
                     }
                 }

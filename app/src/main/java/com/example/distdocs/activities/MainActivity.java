@@ -37,6 +37,8 @@ import com.example.distdocs.accessories.MethodesAccessoires;
 import com.example.distdocs.accessories.ResponseCallback;
 import com.example.distdocs.accessories.Startup;
 import com.example.distdocs.accessories.DocumentAdapter;
+import com.example.distdocs.dao.UtilisateurDao;
+import com.example.distdocs.entities.Utilisateur;
 import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity {
@@ -110,6 +112,16 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
+//        UtilisateurDao dao =  new UtilisateurDao(this);
+//        Utilisateur user =  dao.selectUser();
+//        if(user != null){
+//            MenuItem item = menu.findItem(R.id.signup);
+//            item.setVisible(false);
+//            MenuItem item1 = menu.findItem(R.id.login);
+//            item1.setVisible(false);
+//        }
+
         return true;
     }
 

@@ -4,8 +4,8 @@ public class Constante {
 //    public static  final String SERVER = "http://myracenter.homeip.net";
 //public static  final String DIRECTORY = "/home/myra";
     public static  final String PROTOCOLE = "http://";
-//    public static  final String SERVER = "192.168.1.124";
-    public static  final String SERVER = "10.42.0.1";
+    public static  final String SERVER = "192.168.1.124";
+//    public static  final String SERVER = "10.42.0.1";
     public static  final String PORT =":8088";
     public static final String table_doc = "Document";
     public static final String table_cle = "Cles";
@@ -17,7 +17,7 @@ public class Constante {
     public static final String newBoughtDocs ="/send";
     public static final String getDocs = "/getAllDocs";
     public static final String createAccount = "/createAccount";
-    public static final String login = "/createAccount";
+    public static final String login = "/login";
     public static final String app_name = "/distdocs";
     public static  final String DIRECTORY = "/distdocs";
     public static  final String BOOKS =DIRECTORY+"/books";

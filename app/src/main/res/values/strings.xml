@@ -16,5 +16,5 @@
     <string name="createAccount">Créer compte</string>
     <string name="slogan">La plateforme d\'accès au documents numériques</string>
     <string name="noInternet">Pas de connexion Internet.</string>
-    <string name="noDocInLibrary">Aucun document dans votre bbibliothèque</string>
+    <string name="noDocInLibrary">Aucun document dans votre bibliothèque</string>
 </resources>

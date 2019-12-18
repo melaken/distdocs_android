@@ -24,6 +24,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.distdocs.R;
 import com.example.distdocs.accessories.ResponseCallback;
+import com.example.distdocs.dao.CleDao;
 import com.example.distdocs.dao.DocumentDao;
 import com.example.distdocs.accessories.Constante;
 import com.example.distdocs.encryption.CryptoException;
@@ -47,19 +48,19 @@ public class DocumentActivity extends AppCompatActivity {
     File doc;
     String fileName;
     private ProgressDialog progressDialog;
-    private DocumentDao dao;
-    private String key;
+    private CleDao cledao;
+    private long docId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        dao = new DocumentDao(this);
-        key = getKey();
+        cledao = new CleDao(this);
         setContentView(R.layout.display_doc_layout);
         progressDialog = new ProgressDialog(this);
 
        fileName = getIntent().getStringExtra("fileName");
          doc = new File(
                 Environment.getExternalStorageDirectory()+ Constante.BOOKS+"/"+ fileName);
+          docId = Long.parseLong(fileName);
         if(!doc.exists()){
             progressDialog.setMessage("Downloading... Please Wait");
             progressDialog.show();
@@ -68,14 +69,7 @@ public class DocumentActivity extends AppCompatActivity {
                 @Override
                 public void onLoginSuccess(Object result) {
                     progressDialog.dismiss();
-                    try {
-                        byte[] outputBytes = CryptoUtils.decrypt(key, new FileInputStream(doc));
-                        openDoc(outputBytes);
-                    } catch (CryptoException e) {
-                        e.printStackTrace();
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    }
+                    decrypt();
 
                 }
                 public void onLoginError(Object result){
@@ -85,14 +79,7 @@ public class DocumentActivity extends AppCompatActivity {
             },this,fileName);
 
         }else {
-            try {
-                byte[] outputBytes = CryptoUtils.decrypt(key, new FileInputStream(doc));
-                openDoc(outputBytes);
-            } catch (CryptoException e) {
-                e.printStackTrace();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
+            decrypt();
         }
     }
 
@@ -119,9 +106,11 @@ public class DocumentActivity extends AppCompatActivity {
                     Log.i("dowloadFile","before decode64");
                     InputStream doc_stream = new ByteArrayInputStream(Base64.decode(obj.getString("doc"),Base64.DEFAULT));
                     Log.i("dowloadFile","before crypto");
+                    String key =  UUID.randomUUID().toString().substring(0, 16);
                     byte[] outputBytes = CryptoUtils.encrypt(key, doc_stream);
                     Log.i("dowloadFile","before storestream");
                     DocumentDao.storeStream(new ByteArrayInputStream(outputBytes),Constante.BOOKS,fileName);
+                    cledao.insertKey(key,Long.parseLong(fileName));
                     Log.i("dowloadFile","after storestream");
 
                     if (responseCallback != null) {
@@ -179,15 +168,15 @@ public class DocumentActivity extends AppCompatActivity {
         request.add(stringRequest);
 
     }
-    private String getKey(){
-        String key = dao.getKey();
-        if( key== null) {
-            Log.i("getKey","In if getKey");
-            key = UUID.randomUUID().toString().substring(0, 16);
-            dao.insertKey(key);
+    private void decrypt(){
+        try {
+            byte[] outputBytes = CryptoUtils.decrypt(cledao.getKey(docId), new FileInputStream(doc));
+            openDoc(outputBytes);
+        } catch (CryptoException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
-        Log.i("getKey",key);
-        return key;
     }
 
 }
