@@ -34,6 +34,7 @@ import com.example.distdocs.entities.Utilisateur;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -59,6 +60,7 @@ public class FetchDocsRequest  extends Activity {
         TextView libraryTitle = findViewById(R.id.library_tittle);
         libraryImage.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.colorBlack));
         libraryTitle.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorBlack));
+        finish();
 
     }
     @Override

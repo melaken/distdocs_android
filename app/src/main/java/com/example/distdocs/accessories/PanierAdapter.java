@@ -1,11 +1,8 @@
 package com.example.distdocs.accessories;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
-import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,66 +10,64 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 
 import com.example.distdocs.R;
-import com.example.distdocs.activities.DocumentActivity;
 import com.example.distdocs.entities.Document;
 
 import java.util.List;
-public class DocumentAdapter extends ArrayAdapter<Document> {
+
+public class PanierAdapter extends ArrayAdapter<Document> {
+
     Activity activity;
     int layoutResourceId;
     List<Document> data;
-    //    Document doc;
-
-    public DocumentAdapter(Activity activity, int layoutResourceId, List<Document> data) {
+    public PanierAdapter(Activity activity, int layoutResourceId, List<Document> data) {
         super(activity, layoutResourceId, data);
         this.activity=activity;
         this.layoutResourceId=layoutResourceId;
         this.data=data;
 
     }
-    class DocumentHolder
+    private void update(){
+        this.notifyDataSetChanged();
+    }
+    class PanierHolder
     {
         TextView prix;
-        TextView docId;
+        long docId;
         ImageView image;
-        TextView date;
+//        ImageView imageDelete;
     }
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View row=convertView;
-        DocumentHolder holder=null;
+        PanierHolder holder=null;
 
         if(row==null)
         {
             LayoutInflater inflater=LayoutInflater.from(activity);
             row=inflater.inflate(layoutResourceId,parent,false);
-            holder=new DocumentHolder();
-            holder.prix= (TextView) row.findViewById(R.id.textViewPrix);
-            holder.image = (ImageView)row.findViewById(R.id.imageView);
-            holder.image.setEnabled(false);
-            holder.date = (TextView)row.findViewById(R.id.textViewDate);
-            holder.docId = (TextView)row.findViewById(R.id.textViewDocId);
+            holder=new PanierHolder();
+            holder.prix= (TextView) row.findViewById(R.id.prixRecap);
+            holder.image = (ImageView)row.findViewById(R.id.docImage);
+//            holder.imageDelete = (ImageView)row.findViewById(R.id.remove_doc);
 
             row.setTag(holder);
-
         }
         else
         {
-            holder= (DocumentHolder) row.getTag();
+            holder= (PanierHolder) row.getTag();
         }
         Document doc = data.get(position);
+        Log.e("Doc_id "+doc.getId(),"Prix "+doc.getPrix());
 
         Bitmap bm = doc.getImage();
         Log.e("Image Display"," after call getImage "+bm+" "+doc.getId());
 //        if(bm != null){
-            holder.prix.setText(doc.getPrix()+"  FCFA");
-            holder.date.setText(doc.getDateParution()+"");
-        holder.docId.setText(doc.getId()+"");
+        holder.prix.setText(doc.getPrix()+"  FCFA");
+
         final long docId =doc.getId();
+        holder.docId = docId;
 //        }
         if(bm == null){
             bm = BitmapFactory.decodeResource(activity.getResources(), R.drawable.library_books);
@@ -80,18 +75,16 @@ public class DocumentAdapter extends ArrayAdapter<Document> {
         }
 
         holder.image.setImageBitmap(bm);
-
-        ImageView addToShoppingCart = (ImageView)row.findViewById(R.id.addToShoppingCart);
-        addToShoppingCart.setOnClickListener(new View.OnClickListener() {
+//        holder.imageDelete.setImageResource(R.drawable.delete);
+        ImageView imageDelete = (ImageView)row.findViewById(R.id.remove_doc);
+        imageDelete.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Log.i("Doc Id",""+docId);
 
-                if(Startup.ifPanierContainsDoc(docId))
-                    Toast.makeText(activity.getBaseContext(),"Document deja dans le panier",Toast.LENGTH_SHORT).show();
-                else{
-                    Startup.addDocToShoppingCart(docId);
-                    Toast.makeText(activity.getApplicationContext(),Startup.panier.size()+" articles dans le panier",Toast.LENGTH_SHORT).show();
-                }
+                    Startup.removeDocToShoppingCart(docId);
+               TextView totalRecap = activity.findViewById(R.id.totalRecap);
+                totalRecap.setText(Startup.totalPanier()+   "   FCFA");
+                    update();
             }
         });
 

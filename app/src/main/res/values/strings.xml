@@ -15,6 +15,6 @@
     <string name="signuplink">Pas encore de compte? Créer</string>
     <string name="createAccount">Créer compte</string>
     <string name="slogan">La plateforme d\'accès au documents numériques</string>
-    <string name="noInternet">Pas de connexion Internet.</string>
+    <string name="noInternet">Serveur inaccessible</string>
     <string name="noDocInLibrary">Aucun document dans votre bibliothèque</string>
 </resources>

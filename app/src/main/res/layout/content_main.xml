@@ -31,7 +31,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:numColumns="2"
-            android:verticalSpacing="50dp"/>
+            android:verticalSpacing="20dp"/>
 
     </LinearLayout>
 

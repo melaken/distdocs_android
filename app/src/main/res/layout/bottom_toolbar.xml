@@ -4,7 +4,7 @@
     android:id="@+id/grid1"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:columnCount="3"
+    android:columnCount="4"
     android:rowCount="2"
     android:orientation="horizontal"
     android:verticalSpacing="50dp">
@@ -26,6 +26,15 @@
         android:layout_marginRight="40dp"
         android:layout_gravity="center_horizontal"
         android:src="@drawable/library_books" >
+    </ImageView>
+    <ImageView
+        android:id="@+id/shopping"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="40dp"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/shopping"
+        android:visibility="gone">
     </ImageView>
     <ImageView
         android:id="@+id/subscriptions"
@@ -55,6 +64,17 @@
         android:layout_gravity="center_horizontal"
         android:textStyle="bold"
         android:text="Mes documents"/>
+    <TextView
+        android:id="@+id/shopping_tittle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="11dp"
+        android:layout_marginRight="40dp"
+        android:textColor="@color/colorBlack"
+        android:layout_gravity="center_horizontal"
+        android:textStyle="bold"
+        android:visibility="gone"
+        android:text="Mon panier"/>
     <TextView
             android:id="@+id/subscriptions_tittle"
             android:layout_width="wrap_content"

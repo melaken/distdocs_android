@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     ImageView homeImage ;
     ImageView libraryImage;
     ImageView shoppingImage;
+//    ImageView addToShoppingCart;
 
     private DrawerLayout dl;
     private ActionBarDrawerToggle t;
@@ -96,12 +97,15 @@ public class MainActivity extends AppCompatActivity {
         }else
             displayDocs();
 
+        Startup.mainActivity = this;
     }
     private void displayDocs(){
         DocumentAdapter docApt = new DocumentAdapter(MainActivity.this,R.layout.doc_layout, Startup.docList);
         Log.i("docApt",""+docApt);
         gridView.setAdapter(docApt);
         docApt.notifyDataSetChanged();
+//        ImageView addToShoppingCart = findViewById(R.id.addToShoppingCart);
+//        addToShoppingCart.setOnClickListener(new Listeners(this));
     }
     private void displayNoConnectionTOServer(){
         noInternet = findViewById(R.id.textViewNoIternet);
@@ -113,14 +117,14 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
 
-//        UtilisateurDao dao =  new UtilisateurDao(this);
-//        Utilisateur user =  dao.selectUser();
-//        if(user != null){
-//            MenuItem item = menu.findItem(R.id.signup);
-//            item.setVisible(false);
-//            MenuItem item1 = menu.findItem(R.id.login);
-//            item1.setVisible(false);
-//        }
+        UtilisateurDao dao =  new UtilisateurDao(this);
+        Utilisateur user =  dao.selectUser();
+        if(user != null){
+            MenuItem item = menu.findItem(R.id.signup);
+            item.setVisible(false);
+            MenuItem item1 = menu.findItem(R.id.login);
+            item1.setVisible(false);
+        }
 
         return true;
     }
@@ -159,15 +163,18 @@ public class MainActivity extends AppCompatActivity {
     private void setListeners(){
         homeImage = findViewById(R.id.home);
         libraryImage = findViewById(R.id.library);
+
+
         homeImage.setOnClickListener(new Listeners(this));
         libraryImage.setOnClickListener(new Listeners(this));
+
 
         TextView homeTitle = findViewById(R.id.home_tittle);
         homeImage.setColorFilter(ContextCompat.getColor(context, R.color.colorTextbottomTool));
         homeTitle.setTextColor(ContextCompat.getColor(context, R.color.colorTextbottomTool));
 
-//        shoppingImage = findViewById(R.id.shopping_cart);
-//        shoppingImage.setOnClickListener(new Listeners(this));
+        shoppingImage = findViewById(R.id.shopping);
+        shoppingImage.setOnClickListener(new Listeners(this));
 
     }
     private void setNavigationView(){
@@ -214,6 +221,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+    public void addShoppingCartOnclick(View view){
+        view.findViewById(R.id.textViewDocId);
+        Log.e("addShoppingCartOnclick","in addShoppingCartOnclick");
+        TextView docId = (TextView)findViewById(R.id.textViewDocId);
+        Log.i("Doc Id",""+docId.getText());
     }
 
 }
