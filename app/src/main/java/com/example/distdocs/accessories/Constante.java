@@ -24,7 +24,9 @@ public class Constante {
     public static  final String COVER =DIRECTORY+"/cover_page";
     public static  final String sendDocStream= "/sendDocStream";
     public static  final  int  requestTimeout = 60000000;
+    public static  final String sendPanier= "/shoppingCartFromMobile";
 
     public static final String EMAIL_NOT_VALID = "Email non-valide";
     public static final String PASS_NOT_VALID = "Entre 3 et 10 caractères alphanumeriques";
+
 }

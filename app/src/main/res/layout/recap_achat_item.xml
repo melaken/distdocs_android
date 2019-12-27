@@ -5,31 +5,32 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="5dp"
     >
 
     <ImageView
         android:id="@+id/docImage"
         android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_gravity="center_horizontal"
+        android:layout_height="150dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginRight="10dp"
         android:focusable="true">
 
     </ImageView>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:textSize="13dp"
+        android:layout_gravity="center_vertical"
+        android:textSize="15dp"
+        android:layout_marginRight="10dp"
         android:textStyle="bold"
         android:id="@+id/prixRecap"/>
     <ImageView
         android:id="@+id/remove_doc"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginRight="40dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:src="@drawable/delete"
-        android:layout_gravity="center_horizontal"
+        android:tint="@color/colorTextbottomTool"
+        android:layout_gravity="center_vertical"
         android:focusable="true">
     </ImageView>
 </LinearLayout>

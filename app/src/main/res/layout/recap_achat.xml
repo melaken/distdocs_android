@@ -2,51 +2,67 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:layout_marginTop="10dp">
-
-    <GridView
-        android:id="@+id/recapGridView"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:numColumns="1"
-        android:verticalSpacing="20dp"/>
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:layout_marginTop="10dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:textSize="14dp"
-            android:textStyle="bold"
-            android:text="Total:"
-            android:textColor="@color/colorRed"
-            android:id="@+id/totalTitle"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:textSize="14dp"
-            android:textStyle="bold"
-            android:textColor="@color/colorRed"
-            android:id="@+id/totalRecap"/>
-
-    </LinearLayout>
-    <Button
-        android:id="@+id/button_payer"
-        android:layout_height="wrap_content"
+    >
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="Payer" />
-</LinearLayout>
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true">
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="50dp"
+            android:orientation="vertical">
+
+            <GridView
+                android:id="@+id/recapGridView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:numColumns="1"
+                android:verticalSpacing="20dp"
+                android:layout_marginBottom="150dp"/>
+
+
+                <TextView
+                    android:id="@+id/totalTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_below="@+id/recapGridView"
+                    android:text="Total :"
+                    android:textColor="@color/colorRed"
+                    android:textSize="16dp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/totalRecap"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_below="@+id/recapGridView"
+                    android:layout_toRightOf="@+id/totalTitle"
+                    android:textColor="@color/colorRed"
+                    android:textSize="14dp"
+                    android:textStyle="bold" />
+
+                <Button
+                    android:id="@+id/button_payer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/totalRecap"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="130dp"
+                    android:layout_marginBottom="10dp"
+                    android:text="Payer" />
+
+            </RelativeLayout>
+
+    </ScrollView>
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/bottomToolbar"
         android:layout_width="match_parent"

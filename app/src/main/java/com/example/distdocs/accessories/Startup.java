@@ -34,12 +34,14 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Startup extends Application {
     public static ArrayList<Document> docList= new ArrayList<>();
     public static boolean isgetDocsCalled = false;
     public static ArrayList<Document> panier= new ArrayList<>();
     public static Activity mainActivity;
+    private static  float total=0;
 
     @Override
     public void onCreate(){
@@ -145,12 +147,14 @@ public class Startup extends Application {
     public static void addDocToShoppingCart(long docId){
         Document doc = findDocWithId(docId,docList);
         panier.add(doc);
+        total = total + doc.getPrix();
         if(panier.size() == 1)
             displayShoppingCart(mainActivity);
     }
     public static void removeDocToShoppingCart(long docId){
         Document doc = findDocWithId(docId,panier);
         panier.remove(doc);
+        total = total - doc.getPrix();
         if(panier.size()==0)
             hideShoppingCart(mainActivity);
     }
@@ -184,9 +188,17 @@ public class Startup extends Application {
         return result;
     }
     public static float totalPanier(){
-       float total = 0;
-        for(Document d : panier)
-            total += d.getPrix();
         return total;
+    }
+
+    public static String panierAsString(){
+         long[] tab = new long[panier.size()];
+         int i =0;
+        for(Document d : panier){
+            tab[i] = d.getId();
+            i++;
+        }
+        Log.i("panierAsString",Arrays.toString(tab)+"");
+        return Arrays.toString(tab);
     }
 }
