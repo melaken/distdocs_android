@@ -1,5 +1,8 @@
 package com.example.distdocs.activities;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -11,8 +14,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -24,15 +30,20 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.distdocs.R;
 import com.example.distdocs.accessories.Constante;
+import com.example.distdocs.accessories.MethodesAccessoires;
 import com.example.distdocs.accessories.ResponseCallback;
 import com.example.distdocs.accessories.Startup;
+import com.example.distdocs.dao.TransactionDao;
 import com.example.distdocs.entities.Document;
+import com.example.distdocs.entities.Etat;
+import com.example.distdocs.entities.Transaction;
 import com.example.distdocs.entities.Utilisateur;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,10 +56,20 @@ public class PaiementActivity extends AppCompatActivity {
     private Context context;
     Utilisateur user;
     private String numTel;
+    private ProgressDialog progressDialog;
+    private TransactionDao transDao;
+    private boolean success = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = this;
+        transDao = new TransactionDao(this);
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Sending request");
+
+        MethodesAccessoires.notification(this);
 
         setContentView(R.layout.payer_layout);
         user = Startup.getUser(this);
@@ -64,20 +85,32 @@ public class PaiementActivity extends AppCompatActivity {
                 payer();
             }
         });
+
     }
 
     private void payer(){
         numTel = _numTel.getText().toString();
         if(validate()){
+            progressDialog.show();
             buyDocs(new ResponseCallback() {
                 @Override
                 public void onLoginSuccess(Object result) {
+                    if(success){
+                        Startup.panier = new ArrayList<>();
+                        Intent intent = new Intent();
+                        intent.setClass(context,MainActivity.class);
+                        startActivity(intent);
+                        Toast.makeText(context,"Transaction initiée avec succèss !!!",Toast.LENGTH_LONG).show();
+                    }else{
+                        Toast.makeText(context,"Erreur lors de la transaction",Toast.LENGTH_LONG).show();
+                    }
 
                 }
 
                 @Override
                 public void onLoginError(Object result) {
-
+                    progressDialog.dismiss();
+                    Toast.makeText(context,"Une erreur est survenue",Toast.LENGTH_LONG).show();
                 }
             },context,user.getEmail());
         }
@@ -100,15 +133,32 @@ public class PaiementActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         try {
+                            progressDialog.dismiss();
                             JSONObject obj = new JSONObject(response);
+                            Log.i("response ",""+response);
+                            if(obj.has("status") && obj.getString("status").equals("SUCCESS")){
+//                                Toast.makeText(context,obj.getString("message"),Toast.LENGTH_LONG).show();
+                                Transaction trans = new Transaction();
+                                trans.setReference(obj.getString("transaction_reference"));
+                                trans.setEtat(Etat.INITIE.name());
+                                transDao.creer(trans);
+
+                            }else{
+                                success=false;
+//                                Toast.makeText(context,"Erreur lors de la transaction",Toast.LENGTH_LONG).show();
+                            }
                             if (responseCallback != null) {
                                 responseCallback.onLoginSuccess(response);
                             }
 
                         } catch (JSONException e) {
+                            progressDialog.dismiss();
+                            Toast.makeText(context,"Une erreur est survenue",Toast.LENGTH_LONG).show();
                             Log.e("buyDocs JSONException",e.getMessage());
                             e.printStackTrace();
                         }catch (Throwable e) {
+                            progressDialog.dismiss();
+                            Toast.makeText(context,"Une erreur est survenue",Toast.LENGTH_LONG).show();
                             Log.e("buyDocs ErrorListener 0",""+e.getMessage());
                             e.printStackTrace();
                         }
@@ -152,4 +202,9 @@ public class PaiementActivity extends AppCompatActivity {
 
         request.add(stringRequest);
     }
+
+
+
+
+
 }

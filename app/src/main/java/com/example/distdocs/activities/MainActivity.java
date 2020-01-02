@@ -71,6 +71,8 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         setListeners();
 
+        MethodesAccessoires.notification(this);
+
         setNavigationView();
         gridView = findViewById(R.id.accueilGridView);
 
@@ -175,6 +177,8 @@ public class MainActivity extends AppCompatActivity {
 
         shoppingImage = findViewById(R.id.shopping);
         shoppingImage.setOnClickListener(new Listeners(this));
+        if(Startup.panier.size()!=0)
+            shoppingImage.setVisibility(View.VISIBLE);
 
     }
     private void setNavigationView(){
@@ -221,12 +225,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-    }
-    public void addShoppingCartOnclick(View view){
-        view.findViewById(R.id.textViewDocId);
-        Log.e("addShoppingCartOnclick","in addShoppingCartOnclick");
-        TextView docId = (TextView)findViewById(R.id.textViewDocId);
-        Log.i("Doc Id",""+docId.getText());
     }
 
 }

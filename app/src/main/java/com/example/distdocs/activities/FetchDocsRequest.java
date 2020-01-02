@@ -24,6 +24,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.distdocs.R;
 import com.example.distdocs.accessories.BiblioAdapter;
 import com.example.distdocs.accessories.Listeners;
+import com.example.distdocs.accessories.MethodesAccessoires;
 import com.example.distdocs.accessories.Startup;
 import com.example.distdocs.dao.DocumentDao;
 import com.example.distdocs.accessories.Constante;
@@ -74,6 +75,8 @@ public class FetchDocsRequest  extends Activity {
         progressDialog.show();
         setContentView(R.layout.bibliotek);
         setListeners();
+
+        MethodesAccessoires.notification(this);
 
         Utilisateur user = Startup.getUser(this);
         gridView = (GridView) findViewById(R.id.biblioGridView);
@@ -186,6 +189,12 @@ public class FetchDocsRequest  extends Activity {
         TextView libraryTitle =findViewById(R.id.library_tittle);
         libraryImage.setColorFilter(ContextCompat.getColor(getApplicationContext(), R.color.colorTextbottomTool));
         libraryTitle.setTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorTextbottomTool));
+
+        TextView shoppingTitle =findViewById(R.id.shopping_tittle);
+        ImageView shoppingImage = findViewById(R.id.shopping);
+        shoppingImage.setOnClickListener(new Listeners(this));
+        if(Startup.panier.size()!=0)
+            shoppingImage.setVisibility(View.VISIBLE);
 
     }
 

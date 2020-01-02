@@ -17,4 +17,5 @@
     <string name="slogan">La plateforme d\'accès au documents numériques</string>
     <string name="noInternet">Serveur inaccessible</string>
     <string name="noDocInLibrary">Aucun document dans votre bibliothèque</string>
+    <string name="noDocInShopCart">Aucun article dans votre panier</string>
 </resources>

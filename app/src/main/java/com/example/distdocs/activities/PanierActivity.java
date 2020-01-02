@@ -36,10 +36,14 @@ public class PanierActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recap_achat);
-        shoppingListener();
+        if(Startup.panier.size()==0){
+            findViewById(R.id.textnoDocInShopCart).setVisibility(View.VISIBLE);
+            findViewById(R.id.recap_layout).setVisibility(View.GONE);
+        }else {
+            shoppingListener();
+            setTotalPanier();
+        }
         setListeners();
-        setTotalPanier();
-
 
     }
     private  void setTotalPanier(){

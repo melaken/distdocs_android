@@ -18,7 +18,9 @@ import android.widget.Toast;
 
 import com.example.distdocs.R;
 import com.example.distdocs.activities.DocumentActivity;
+import com.example.distdocs.dao.UtilisateurDao;
 import com.example.distdocs.entities.Document;
+import com.example.distdocs.entities.Utilisateur;
 
 import java.util.List;
 public class DocumentAdapter extends ArrayAdapter<Document> {
@@ -85,12 +87,18 @@ public class DocumentAdapter extends ArrayAdapter<Document> {
         addToShoppingCart.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Log.i("Doc Id",""+docId);
+                UtilisateurDao dao =  new UtilisateurDao(activity.getApplicationContext());
+                Utilisateur user =  dao.selectUser();
+                if(user != null) {
 
-                if(Startup.ifPanierContainsDoc(docId))
-                    Toast.makeText(activity.getBaseContext(),"Document deja dans le panier",Toast.LENGTH_SHORT).show();
-                else{
-                    Startup.addDocToShoppingCart(docId);
-                    Toast.makeText(activity.getApplicationContext(),Startup.panier.size()+" articles dans le panier",Toast.LENGTH_SHORT).show();
+                    if (Startup.ifPanierContainsDoc(docId))
+                        Toast.makeText(activity.getBaseContext(), "Document deja dans le panier", Toast.LENGTH_SHORT).show();
+                    else {
+                        Startup.addDocToShoppingCart(docId);
+                        Toast.makeText(activity.getApplicationContext(), Startup.panier.size() + " articles dans le panier", Toast.LENGTH_SHORT).show();
+                    }
+                }else{
+                    Toast.makeText(activity.getApplicationContext(),"Veuillez vous connecter avant de procéder aux achats",Toast.LENGTH_LONG).show();
                 }
             }
         });

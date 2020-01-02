@@ -148,15 +148,15 @@ public class Startup extends Application {
         Document doc = findDocWithId(docId,docList);
         panier.add(doc);
         total = total + doc.getPrix();
-        if(panier.size() == 1)
-            displayShoppingCart(mainActivity);
+//        if(panier.size() == 1)
+//            displayShoppingCart(mainActivity);
     }
     public static void removeDocToShoppingCart(long docId){
         Document doc = findDocWithId(docId,panier);
         panier.remove(doc);
         total = total - doc.getPrix();
-        if(panier.size()==0)
-            hideShoppingCart(mainActivity);
+//        if(panier.size()==0)
+//            hideShoppingCart(mainActivity);
     }
     //retrouve un doc par son id
     private static Document findDocWithId(long id,ArrayList<Document> liste) {
