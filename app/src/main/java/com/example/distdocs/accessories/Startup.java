@@ -33,6 +33,8 @@ import org.json.JSONObject;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -51,9 +53,11 @@ public class Startup extends Application {
     private void createDirectories(){
         String books_dir = Environment.getExternalStorageDirectory()+Constante.BOOKS;
         String cover_dir = Environment.getExternalStorageDirectory()+Constante.COVER;
+        
 
         File books_file = new File(books_dir);
         File cover_file = new File(cover_dir);
+
         if(!books_file.exists()){
             books_file.mkdirs();
         }

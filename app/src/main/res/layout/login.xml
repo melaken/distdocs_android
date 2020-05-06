@@ -12,7 +12,7 @@
         android:paddingLeft="24dp"
         android:paddingRight="24dp">
 
-        <ImageView android:src="@drawable/library_books"
+        <ImageView android:src="@mipmap/logo_foreground"
             android:layout_width="wrap_content"
             android:layout_height="72dp"
             android:layout_marginBottom="24dp"
@@ -51,16 +51,18 @@
             android:layout_marginTop="24dp"
             android:layout_marginBottom="24dp"
             android:padding="12dp"
-            android:text="@string/login"/>
+            android:text="@string/login"
+            android:layout_gravity="center_horizontal"/>
 
         <TextView android:id="@+id/link_signup"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
             android:textColor="@color/colorTextbottomTool"
             android:text="@string/signuplink"
             android:gravity="center"
-            android:textSize="16dip"/>
+            android:textSize="16dip"
+            android:layout_gravity="center_horizontal"/>
 
     </LinearLayout>
 </ScrollView>
