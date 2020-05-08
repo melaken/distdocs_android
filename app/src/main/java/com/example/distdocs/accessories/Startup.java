@@ -42,7 +42,7 @@ public class Startup extends Application {
     public static ArrayList<Document> docList= new ArrayList<>();
     public static boolean isgetDocsCalled = false;
     public static ArrayList<Document> panier= new ArrayList<>();
-    public static Activity mainActivity;
+    public static Activity fetchDocsActivity;
     private static  float total=0;
 
     @Override

@@ -98,7 +98,7 @@ public class PaiementActivity extends AppCompatActivity {
                     if(success){
                         Startup.panier = new ArrayList<>();
                         Intent intent = new Intent();
-                        intent.setClass(context,MainActivity.class);
+                        intent.setClass(context,FetchDocsActivity.class);
                         startActivity(intent);
                         Toast.makeText(context,"Transaction initiée avec succèss !!!",Toast.LENGTH_LONG).show();
                     }else{

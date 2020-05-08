@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -57,6 +58,8 @@ public class SignupActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.signup);
+        Toolbar toolbar = findViewById(R.id.topToolbarsignup);
+        setSupportActionBar(toolbar);
         ButterKnife.bind(this);
 
         _signupButton.setOnClickListener(new View.OnClickListener() {
@@ -121,7 +124,7 @@ public class SignupActivity extends AppCompatActivity {
         Toast.makeText(getBaseContext(), "Compte créé avec succès : vous pouvez vous connecter", Toast.LENGTH_LONG).show();
         _signupButton.setEnabled(true);
         setResult(RESULT_OK, null);
-        finish();
+        //finish();
     }
 
     public void onSignupFailed() {

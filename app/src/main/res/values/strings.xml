@@ -18,4 +18,8 @@
     <string name="noInternet">Serveur inaccessible</string>
     <string name="noDocInLibrary">Aucun document dans votre bibliothèque</string>
     <string name="noDocInShopCart">Aucun article dans votre panier</string>
+    <string name="biblioLabel">Bibliothèque</string>
+    <string name="panierLabel">Votre panier courant</string>
+    <string name="createAccLabel">Création de compte</string>
+    <string name="connectLabel">Connexion</string>
 </resources>

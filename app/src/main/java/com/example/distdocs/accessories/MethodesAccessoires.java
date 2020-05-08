@@ -3,6 +3,7 @@ package com.example.distdocs.accessories;
 import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
+import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 
@@ -46,6 +47,10 @@ public class MethodesAccessoires extends Activity {
 
     private static JSONArray jsonArray;
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
     public static boolean isServerReachabable(URL url) {
         int code = 0;
         HttpURLConnection connection = null;

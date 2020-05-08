@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -55,6 +56,8 @@ public class LoginActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
+        Toolbar toolbar = findViewById(R.id.topToolbarlogin);
+        setSupportActionBar(toolbar);
         ButterKnife.bind(this);
         context = this;
 
@@ -127,7 +130,10 @@ public class LoginActivity extends AppCompatActivity {
         dao.storeUser(user);
         Toast.makeText(this, "Vous êtes conecté(e) ", Toast.LENGTH_SHORT).show();
         _loginButton.setEnabled(true);
-        finish();
+      //  finish();
+        Intent intent = new Intent();
+        intent.setClass(this, FetchDocsActivity.class);
+        startActivity(intent);
     }
 
 

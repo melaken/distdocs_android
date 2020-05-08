@@ -1,22 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.SignupActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/topToolbarsignup"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorTextbottomTool"
+        android:layout_gravity="top">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/createAccLabel"
+            android:layout_gravity="center_horizontal"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            android:textColor="@color/colorWhite"
+            />
+    </androidx.appcompat.widget.Toolbar>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:layout_marginTop="50dp"
     android:fitsSystemWindows="true">
 
+<!--    <include layout="@layout/toolbar_signup" />-->
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="10dp"
         android:paddingLeft="24dp"
         android:paddingRight="24dp">
 
         <ImageView android:src="@mipmap/logo_foreground"
             android:layout_width="wrap_content"
-            android:layout_height="72dp"
-            android:layout_marginBottom="24dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal" />
 
         <!--  Name Label -->
@@ -87,6 +110,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:layout_marginBottom="24dp"
+            android:background="@color/colorTextbottomTool"
+            android:textColor="@color/colorWhite"
             android:padding="12dp"
             android:text="@string/createAccount"/>
 
@@ -101,3 +126,4 @@
 
     </LinearLayout>
 </ScrollView>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>

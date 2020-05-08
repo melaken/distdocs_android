@@ -9,7 +9,7 @@
         android:id="@+id/topToolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="#0060a0"
+        android:background="@color/colorTextbottomTool"
         android:layout_gravity="top"
         app:popupTheme="@style/AppTheme.PopupOverlay">
         <TextView
