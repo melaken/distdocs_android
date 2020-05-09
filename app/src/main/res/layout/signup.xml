@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:text="@string/createAccLabel"
             android:layout_gravity="center_horizontal"
-            android:textSize="18dp"
+            android:textSize="20dp"
             android:textStyle="bold"
             android:textColor="@color/colorWhite"
             />
